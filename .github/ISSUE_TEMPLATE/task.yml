@@ -1,0 +1,16 @@
+
+name: Task
+description: track a task such as a refactor
+title: "[TASK] <Title>"
+labels: enhancement
+project: TrusteeFriend/1
+
+body:
+- type: textarea
+  attributes:
+    label: Describe the task
+    description: What needs to be done
+  validations:
+    required: true
+
+
