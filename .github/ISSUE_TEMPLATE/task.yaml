@@ -11,5 +11,3 @@ body:
     description: What needs to be done
   validations:
     required: true
-
-

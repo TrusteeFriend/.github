@@ -1,0 +1,36 @@
+name: Bug report
+description: Create a report to help us improve
+title: "[BUG] Issue"
+labels: bug
+project: TrusteeFriend/1
+body:
+- type: textarea
+  attributes:
+    label:  Describe the bug
+    description: What actually happened.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+  label:  Expected behavior
+  description: What should happen.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+  label:  To Reproduce
+  description: What steps to take to make it happen
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label:  Screenshots
+    description: (Optional but helpful)
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Useful info
+    placeholder: |
+      - OS: [e.g. Windows 11, Linux, MacOS]
+      - Browser: [e.g. Firefox, Chrome, Edge, etc...]
