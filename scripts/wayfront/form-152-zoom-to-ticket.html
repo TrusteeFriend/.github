@@ -1,0 +1,170 @@
+<!--
+  Wayfront form custom_code — "Schedule a Free Assessment" (form 152)
+  ---------------------------------------------------------------------------
+  PURPOSE
+    Form 152 embeds Zoom's NATIVE scheduler in an <iframe>
+    (trusteefriend.zoom.us/zbook/...). Because the booking happens inside a
+    cross-origin iframe, none of the Zoom meeting details are written back to
+    the Wayfront form, so the ticket created on submit has no record of the
+    scheduled call.
+
+    This script listens for the Zoom Scheduler's postMessage "booking
+    complete" event, extracts the meeting details, and writes them into a
+    HIDDEN Wayfront field. When the form is submitted that hidden field is
+    saved as a filled form field on the ticket — the same pattern the other
+    Zoom forms (141 / 144 / 149) already use with their custom scheduler.
+
+  PREREQUISITE (must be done in Wayfront, once)
+    Add a `hidden` field to form 152 and give its rendered <input> the id
+    referenced by ZOOM_FIELD_ID below. Wayfront renders hidden fields as
+    `<input type="hidden" id="field_<FIELD_ID>">`, so set ZOOM_FIELD_ID to
+    that id after you create the field. Only values written into a real,
+    form-defined field are persisted onto the ticket — a JS-injected input is
+    NOT saved.
+
+  IMPORTANT — Zoom payload shape is not finalized here
+    Zoom's Scheduler embed postMessage schema is not publicly documented and
+    could not be exercised from the build environment. This script therefore:
+      1. Logs EVERY message received from a *.zoom.us origin to the console
+         (prefix "[zoom->ticket]"), so you can book one test assessment, read
+         the real event in DevTools, and confirm/adjust the field mapping in
+         `extractBooking()` below.
+      2. Best-effort extracts common fields (start time, join url, invitee,
+         host) from several likely shapes.
+      3. Always stores the RAW payload as a fallback so no data is lost even
+         if the mapping needs tuning.
+-->
+<script defer>
+  (function () {
+    "use strict";
+
+    // ------------------------------------------------------------------
+    // CONFIG
+    // ------------------------------------------------------------------
+    // Element id of the Wayfront hidden field that will carry the booking.
+    // Change this to match the hidden field you add in Wayfront
+    // (e.g. "field_7410" once you know the new field's id).
+    var ZOOM_FIELD_ID = "field_zoom_booking";
+
+    // Only trust messages coming from a *.zoom.us origin.
+    var ZOOM_HOST_RE = /(^|\.)zoom\.us$/i;
+
+    var LOG = "[zoom->ticket]";
+
+    // ------------------------------------------------------------------
+    // helpers
+    // ------------------------------------------------------------------
+    function hiddenField() {
+      return document.getElementById(ZOOM_FIELD_ID);
+    }
+
+    function saveToTicketField(record) {
+      var el = hiddenField();
+      if (!el) {
+        console.warn(LOG, "hidden field '" + ZOOM_FIELD_ID + "' not found — " +
+          "add a hidden field to form 152 and point ZOOM_FIELD_ID at it.");
+        return false;
+      }
+      try {
+        el.value = typeof record === "string" ? record : JSON.stringify(record);
+      } catch (e) {
+        el.value = String(record);
+      }
+      // Fire input/change so any Wayfront listeners pick up the value.
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      el.dispatchEvent(new Event("change", { bubbles: true }));
+      console.log(LOG, "saved booking to", ZOOM_FIELD_ID, record);
+      return true;
+    }
+
+    function firstDefined() {
+      for (var i = 0; i < arguments.length; i++) {
+        if (arguments[i] !== undefined && arguments[i] !== null && arguments[i] !== "") {
+          return arguments[i];
+        }
+      }
+      return undefined;
+    }
+
+    // Decide whether a message looks like a completed booking, and pull out
+    // the fields we care about. Tune this once you've seen a real event in
+    // the console (see the header note).
+    function extractBooking(data) {
+      if (!data || typeof data !== "object") return null;
+
+      // The meeting/appointment object can live at a few likely paths.
+      var m = firstDefined(
+        data.booking, data.meeting, data.appointment, data.event,
+        data.payload, data.data, data
+      ) || {};
+
+      var typeHint = String(
+        firstDefined(data.type, data.event, data.action, data.name, "")
+      ).toLowerCase();
+
+      var startTime = firstDefined(
+        m.start_time, m.startTime, m.start, m.scheduled_time, m.scheduledTime,
+        m.date, data.start_time, data.startTime
+      );
+      var joinUrl = firstDefined(
+        m.join_url, m.joinUrl, m.join_link, m.url, m.meeting_url, m.meetingUrl,
+        data.join_url, data.joinUrl
+      );
+
+      var looksLikeBooking =
+        /book|schedul|appointment|confirm|complete|created|success/.test(typeHint) ||
+        !!startTime || !!joinUrl;
+
+      if (!looksLikeBooking) return null;
+
+      var invitee = firstDefined(m.invitee, m.attendee, m.booker, m.guest, {}) || {};
+      var host = firstDefined(m.host, m.organizer, m.planner, {}) || {};
+
+      return {
+        _isBooking: true,
+        _capturedAt: new Date().toISOString(),
+        eventType: typeHint || undefined,
+        startTime: startTime,
+        endTime: firstDefined(m.end_time, m.endTime, m.end),
+        timezone: firstDefined(m.timezone, m.time_zone, m.tz, data.timezone),
+        joinUrl: joinUrl,
+        meetingId: firstDefined(m.meeting_id, m.meetingId, m.id, m.uuid),
+        inviteeName: firstDefined(
+          invitee.name, invitee.full_name,
+          (invitee.first_name || "") + " " + (invitee.last_name || "")
+        ),
+        inviteeEmail: firstDefined(invitee.email, invitee.email_address),
+        hostName: firstDefined(host.name, host.full_name, host.display_name),
+        raw: m
+      };
+    }
+
+    // ------------------------------------------------------------------
+    // listen
+    // ------------------------------------------------------------------
+    window.addEventListener("message", function (ev) {
+      var host;
+      try {
+        host = new URL(ev.origin).hostname;
+      } catch (e) {
+        return; // opaque / null origin — ignore
+      }
+      if (!ZOOM_HOST_RE.test(host)) return;
+
+      var data = ev.data;
+      if (typeof data === "string") {
+        try { data = JSON.parse(data); } catch (e) { /* keep as string */ }
+      }
+
+      // Always log so the real Zoom schema can be confirmed in DevTools.
+      console.log(LOG, "message from", ev.origin, data);
+
+      var booking = extractBooking(data);
+      if (booking) {
+        saveToTicketField(booking);
+      }
+    }, false);
+
+    console.log(LOG, "listener installed — target field:", ZOOM_FIELD_ID);
+  })();
+</script>
