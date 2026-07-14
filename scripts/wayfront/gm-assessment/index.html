@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Schedule a Free Assessment | TrusteeFriend</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    :root {
+      --tf-accent: #2c4e50;
+      --tf-accent-dark: #223c3e;
+      --tf-bg: #f4f6f6;
+      --tf-text: #1f2a2b;
+      --tf-muted: #5c6b6c;
+      --tf-border: #d8e0e0;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--tf-bg);
+      color: var(--tf-text);
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+
+    header.brand {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .wordmark {
+      display: inline-block;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--tf-accent);
+      text-decoration: none;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 30px;
+      line-height: 1.2;
+      margin: 8px 0 8px;
+      color: var(--tf-text);
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 16px;
+      color: var(--tf-muted);
+      margin: 0 auto 32px;
+      max-width: 560px;
+    }
+
+    /* Step 1: the question */
+    .question {
+      background: #fff;
+      border: 1px solid var(--tf-border);
+      border-radius: 14px;
+      padding: 36px 28px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(31, 42, 43, 0.06);
+    }
+
+    .question h2 {
+      font-size: 21px;
+      margin: 0 0 6px;
+      color: var(--tf-text);
+    }
+
+    .question p.hint {
+      font-size: 14px;
+      color: var(--tf-muted);
+      margin: 0 0 24px;
+    }
+
+    .choices {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      appearance: none;
+      border: 2px solid var(--tf-accent);
+      background: var(--tf-accent);
+      color: #fff;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 14px 40px;
+      border-radius: 10px;
+      cursor: pointer;
+      min-width: 140px;
+      transition: background 0.15s ease, transform 0.05s ease;
+    }
+
+    .btn:hover { background: var(--tf-accent-dark); border-color: var(--tf-accent-dark); }
+    .btn:active { transform: translateY(1px); }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--tf-accent);
+    }
+    .btn.secondary:hover { background: #eef2f2; }
+
+    /* Step 2: the scheduler */
+    .scheduler { display: none; }
+    .scheduler.active { display: block; }
+
+    .change-answer {
+      margin: 0 0 14px;
+    }
+
+    .change-answer a {
+      display: inline-block;
+      font-size: 14px;
+      color: var(--tf-accent);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .change-answer a:hover { text-decoration: underline; }
+
+    .embed-shell {
+      background: #fff;
+      border: 1px solid var(--tf-border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(31, 42, 43, 0.06);
+    }
+
+    .embed-shell iframe {
+      display: block;
+      width: 100%;
+      height: 750px;
+      border: 0;
+    }
+
+    footer.legal {
+      text-align: center;
+      font-size: 12px;
+      color: var(--tf-muted);
+      margin-top: 36px;
+    }
+
+    @media (max-width: 560px) {
+      h1 { font-size: 24px; }
+      .btn { padding: 14px 28px; width: 100%; }
+      .embed-shell iframe { height: 640px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="brand">
+      <a class="wordmark" href="https://trusteefriend.com">TrusteeFriend</a>
+    </header>
+
+    <h1>Schedule a Free Assessment</h1>
+    <p class="subtitle">
+      Book a complimentary consultation with our team. First, let us know your
+      language preference so we can connect you with the right specialist.
+    </p>
+
+    <!-- Step 1: language question -->
+    <section class="question" id="question">
+      <h2>Do you require an Arabic translator?</h2>
+      <p class="hint">Choose the option that works best for you.</p>
+      <div class="choices">
+        <button class="btn" type="button" data-choice="yes">Yes</button>
+        <button class="btn secondary" type="button" data-choice="no">No</button>
+      </div>
+    </section>
+
+    <!-- Step 2: scheduler (Arabic) -->
+    <section class="scheduler" id="scheduler-yes" aria-hidden="true">
+      <p class="change-answer"><a data-action="change">&larr; Change answer</a></p>
+      <div class="embed-shell" data-embed="yes"
+           data-src="https://trusteefriend.zoom.us/zbook/alex/trusteefriend-assessment-gm?embedStyle=%7B%22buttonColor%22%3A%22%232c4e50%22%2C%22fontFamily%22%3A%22Arial%22%7D&embed=true">
+      </div>
+    </section>
+
+    <!-- Step 2: scheduler (English) -->
+    <section class="scheduler" id="scheduler-no" aria-hidden="true">
+      <p class="change-answer"><a data-action="change">&larr; Change answer</a></p>
+      <div class="embed-shell" data-embed="no"
+           data-src="https://trusteefriend.zoom.us/zbook/alex/trusteefriend-assessment-gm-2?embedStyle=%7B%22buttonColor%22%3A%22%232c4e50%22%2C%22fontFamily%22%3A%22Arial%22%7D&embed=true">
+      </div>
+    </section>
+
+    <footer class="legal">
+      &copy; TrusteeFriend &middot; Powered by Zoom Scheduler
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var question = document.getElementById('question');
+      var panels = {
+        yes: document.getElementById('scheduler-yes'),
+        no: document.getElementById('scheduler-no')
+      };
+
+      // Mount the chosen panel's iframe (only once per panel).
+      function mount(choice) {
+        var shell = panels[choice].querySelector('[data-embed]');
+        if (shell.getAttribute('data-mounted') === 'true') return;
+        var iframe = document.createElement('iframe');
+        iframe.setAttribute('src', shell.getAttribute('data-src'));
+        iframe.setAttribute('title', 'TrusteeFriend Assessment Scheduler');
+        iframe.setAttribute('allow', 'fullscreen');
+        iframe.setAttribute('loading', 'lazy');
+        shell.appendChild(iframe);
+        shell.setAttribute('data-mounted', 'true');
+      }
+
+      // Tear down a panel's iframe so no hidden Zoom session lingers.
+      function unmount(choice) {
+        var shell = panels[choice].querySelector('[data-embed]');
+        if (shell.getAttribute('data-mounted') !== 'true') return;
+        shell.innerHTML = '';
+        shell.removeAttribute('data-mounted');
+      }
+
+      function show(choice) {
+        question.style.display = 'none';
+        Object.keys(panels).forEach(function (key) {
+          var active = key === choice;
+          panels[key].classList.toggle('active', active);
+          panels[key].setAttribute('aria-hidden', active ? 'false' : 'true');
+          // Keep exactly one scheduler loaded at a time.
+          if (active) { mount(key); } else { unmount(key); }
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function reset() {
+        Object.keys(panels).forEach(function (key) {
+          panels[key].classList.remove('active');
+          panels[key].setAttribute('aria-hidden', 'true');
+          unmount(key);
+        });
+        question.style.display = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      question.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-choice]');
+        if (!btn) return;
+        show(btn.getAttribute('data-choice'));
+      });
+
+      Object.keys(panels).forEach(function (key) {
+        panels[key].addEventListener('click', function (e) {
+          var link = e.target.closest('[data-action="change"]');
+          if (!link) return;
+          e.preventDefault();
+          reset();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
