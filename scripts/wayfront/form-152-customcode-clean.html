@@ -1,0 +1,28 @@
+<!--
+  Clean custom code for Wayfront form 152 ("Schedule a Free Assessment").
+  Paste this into the form's Custom code box to REPLACE what's there now — it
+  drops the leftover (no-op) Zoom-capture script that the MCP could not remove,
+  and keeps only the George/Missiha prefill. The jump-off booking buttons live
+  in the form's HTML fields (7404 / 7408), not here.
+-->
+<script>
+  (function () {
+    function lock(el, val) {
+      if (!el) return;
+      el.value = val;
+      el.readOnly = true;
+      el.style.backgroundColor = '#f3f4f6';
+      el.style.cursor = 'not-allowed';
+    }
+    function prefill() {
+      lock(document.getElementById('name_f'), 'George');
+      lock(document.getElementsByName('name_l')[0], 'Missiha');
+      lock(document.getElementById('email'), 'george@gmbrokerage.com');
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { setTimeout(prefill, 400); });
+    } else {
+      setTimeout(prefill, 400);
+    }
+  })();
+</script>
