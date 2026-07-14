@@ -1,68 +1,22 @@
-<!--
-  Wayfront form custom_code — "Schedule a Free Assessment" (form 152)
-  ===========================================================================
-  PASTE THIS ENTIRE FILE into form 152's "Custom code" box in the Wayfront
-  form editor:  https://trusteefriend.wayfront.com/forms/152
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>PENDING</title></head>
+<body>
+  <!-- Mock of the Wayfront form DOM: the source-tag hidden field + our new field -->
+  <form>
+    <input type="hidden" id="field_7401" name="fields[7401]" value="gm-brokerage">
+    <input type="hidden" id="field_7409" name="fields[7409]" value="ZOOM_BOOKING_PENDING">
+  </form>
+  <pre id="result"></pre>
 
-  Why paste manually: the Wayfront MCP form tool can add fields but has no
-  parameter for custom_code, so the script cannot be deployed via API — only
-  the hidden field was added programmatically.
-
-  What it does
-    Form 152 books the assessment inside a cross-origin Zoom <iframe>
-    (trusteefriend.zoom.us/zbook/...), so nothing about the meeting reaches the
-    Wayfront ticket. This script listens for the Zoom Scheduler's postMessage
-    "booking complete" event and writes the details into the hidden field
-    "Zoom Booking Details" (field 7409, already added to the form). When the
-    form is submitted, that value is saved onto the ticket — the same idea the
-    other Zoom forms use with their hidden slot/planner/timezone fields.
-
-  How the field is located
-    The hidden field 7409 has the default value "ZOOM_BOOKING_PENDING". The
-    script finds the hidden <input> carrying that sentinel value, so it needs
-    no hard-coded DOM id. On load it clears the sentinel, so a submit with no
-    booking sends an empty value rather than the sentinel.
-
-  IMPORTANT — confirm the Zoom payload shape
-    Zoom's Scheduler-embed postMessage schema is not publicly documented and
-    could not be exercised here. This script logs every *.zoom.us message to
-    the console ("[zoom->ticket]") and stores the raw payload as a fallback, so
-    after pasting: book one test assessment, read the real event in DevTools,
-    and tune extractBooking() field paths if needed. No data is lost meanwhile.
-
-  The first <script> block is the existing George/Missiha prefill — keep it.
--->
-<script>
-  (function () {
-    function lock(el, val) {
-      if (!el) return;
-      el.value = val;
-      el.readOnly = true;
-      el.style.backgroundColor = '#f3f4f6';
-      el.style.cursor = 'not-allowed';
-    }
-    function prefill() {
-      lock(document.getElementById('name_f'), 'George');
-      lock(document.getElementsByName('name_l')[0], 'Missiha');
-      lock(document.getElementById('email'), 'george@gmbrokerage.com');
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function () { setTimeout(prefill, 400); });
-    } else {
-      setTimeout(prefill, 400);
-    }
-  })();
-</script>
-
-<!-- Zoom native-scheduler booking -> ticket capture -->
-<script defer>
+  <!-- ===== BEGIN: the exact capture script deployed to form 152 ===== -->
+  <script>
   (function () {
     "use strict";
     var SENTINEL = "ZOOM_BOOKING_PENDING";
     var ZOOM_HOST_RE = /(^|\.)zoom\.us$/i;
     var LOG = "[zoom->ticket]";
     var fieldEl = null;
-
     function locateField() {
       var inputs = document.querySelectorAll('input[type="hidden"]');
       for (var i = 0; i < inputs.length; i++) {
@@ -98,8 +52,7 @@
       var invitee = firstDefined(m.invitee, m.attendee, m.booker, m.guest, {}) || {};
       var host = firstDefined(m.host, m.organizer, m.planner, {}) || {};
       return {
-        _isBooking: true,
-        _capturedAt: new Date().toISOString(),
+        _isBooking: true, _capturedAt: new Date().toISOString(),
         eventType: typeHint || undefined,
         startTime: startTime,
         endTime: firstDefined(m.end_time, m.endTime, m.end),
@@ -120,17 +73,53 @@
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", function () { setTimeout(init, 500); });
     } else { setTimeout(init, 500); }
-
     window.addEventListener("message", function (ev) {
       var host;
       try { host = new URL(ev.origin).hostname; } catch (e) { return; }
       if (!ZOOM_HOST_RE.test(host)) return;
       var data = ev.data;
-      if (typeof data === "string") { try { data = JSON.parse(data); } catch (e) { /* keep string */ } }
+      if (typeof data === "string") { try { data = JSON.parse(data); } catch (e) {} }
       console.log(LOG, "message from", ev.origin, data);
       var booking = extractBooking(data);
       if (booking) saveToTicketField(booking);
     }, false);
     console.log(LOG, "listener installed");
   })();
-</script>
+  </script>
+  <!-- ===== END capture script ===== -->
+
+  <!-- ===== test harness ===== -->
+  <script>
+    var f = function(){ return document.getElementById('field_7409'); };
+    // Sample Zoom-style booking payloads (several shapes, since the real one is TBD)
+    var zoomOrigin = 'https://trusteefriend.zoom.us';
+    // Step 1 @700ms: after init cleared the sentinel, send a NON-zoom message -> must be ignored
+    setTimeout(function(){
+      window.dispatchEvent(new MessageEvent('message', { origin:'https://evil.example.com', data:{ type:'booking.completed', start_time:'2026-07-16T19:00:00Z', join_url:'https://x' }}));
+    }, 700);
+    // Step 2 @1500ms: a real zoom-origin booking event
+    setTimeout(function(){
+      window.dispatchEvent(new MessageEvent('message', {
+        origin: zoomOrigin,
+        data: { type:'booking.completed', booking: {
+          start_time:'2026-07-16T19:00:00Z', end_time:'2026-07-16T19:30:00Z',
+          timezone:'America/Los_Angeles', join_url:'https://trusteefriend.zoom.us/j/8712345678',
+          meeting_id:'8712345678', invitee:{ first_name:'Test', last_name:'Client', email:'client@example.com' },
+          host:{ name:'Alex' } } }
+      }));
+    }, 1500);
+    // Step 3 @3000ms: reflect results
+    setTimeout(function(){
+      var afterZoom = f().value;
+      var out = {
+        ignoredNonZoom: afterZoom.indexOf('evil') === -1,           // non-zoom must not have been captured (nothing evil in value)
+        sentinelCleared_thenSet: afterZoom !== 'ZOOM_BOOKING_PENDING',
+        captured: afterZoom
+      };
+      document.getElementById('result').textContent = JSON.stringify(out, null, 2);
+      var ok = out.ignoredNonZoom && afterZoom && afterZoom.indexOf('8712345678') !== -1 && afterZoom.indexOf('2026-07-16T19:00:00Z') !== -1;
+      document.title = ok ? 'PASS' : 'FAIL';
+    }, 3000);
+  </script>
+</body>
+</html>
