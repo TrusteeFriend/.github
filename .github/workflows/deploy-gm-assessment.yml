@@ -1,8 +1,9 @@
 name: Deploy GM assessment page
 
 # Publishes scripts/wayfront/gm-assessment/ to GitHub Pages.
-# Requires a one-time repo setting: Settings -> Pages -> Source: "GitHub Actions".
-# Once enabled, the page is served at the repository's Pages URL root.
+# The Configure Pages step self-enables Pages (source: GitHub Actions) via the
+# API, so no manual repo setting is required. The page is served at the
+# repository's Pages URL root. Requires that the org allows GitHub Pages.
 
 on:
   push:
@@ -33,6 +34,10 @@ jobs:
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          # Auto-enable Pages (source: GitHub Actions) via the API using the
+          # workflow's pages:write permission, so no manual repo setting is needed.
+          enablement: true
 
       - name: Upload the one-pager as the site root
         uses: actions/upload-pages-artifact@v3
