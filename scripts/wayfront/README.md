@@ -1,77 +1,54 @@
-# Wayfront — post Zoom booking info onto the ticket (form 152)
+# Wayfront form 152 → Zoom → ticket: findings & plan
 
-Captures the Zoom meeting details booked on the **"Schedule a Free Assessment"**
-form (Wayfront form **152**, access key `EL1R6L`) and writes them onto the
-ticket the form creates.
+Goal: get the Zoom meeting details from the **"Schedule a Free Assessment"** form
+(Wayfront form **152**, access key `EL1R6L`) onto the ticket the form creates.
 
-## Why this is needed
+## What we learned (2026-07-14)
 
-Form 152 embeds Zoom's **native** scheduler as a cross-origin `<iframe>`
-(`trusteefriend.zoom.us/zbook/alex/trusteefriend-assessment-gm…`). The booking
-happens entirely inside that iframe, so nothing about the scheduled call
-(date/time, join URL, invitee) is written back to Wayfront — the created ticket
-has no record of the appointment. The other Zoom forms (141/144/149) avoid this
-by writing their chosen slot/planner/timezone into hidden fields.
+- Form 152 embeds Zoom's **native** scheduler in a cross-origin `<iframe>`
+  (`trusteefriend.zoom.us/zbook/alex/trusteefriend-assessment-gm…`).
+- A **front-end capture script cannot work**: Zoom's embed communicates over a
+  private **MessageChannel/MessagePort**, not `window.postMessage`, so a
+  parent-page `message` listener never receives the booking. Confirmed live —
+  the browser console showed the booking (`Booked appt {appointmentId: …}`) with
+  **no** corresponding capture, and the `MessagePort._` stack frames.
+- The system is really designed as **form_data → webhook → backend**. There is
+  an **active webhook (#21): `ticket.created` → `https://scheduler.trusteefriend.com/webhook`**.
+  The custom-scheduler forms (141/144/149) write `zoomTime` / `plannerID` /
+  `timeZone` hidden fields; that backend reads them, creates the Zoom meeting,
+  and advances the ticket (→ "Scheduled (Zoom Created)" / "Booked for Initial
+  Call"). Form 152's native embed sends **no** `zoomTime`, so nothing books.
 
-`form-152-zoom-to-ticket.html` brings form 152 in line with that pattern: it
-listens for the Zoom Scheduler's `postMessage` "booking complete" event and
-stashes the details into a hidden field, which is saved onto the ticket on
-submit.
+## Decision: Approach B
 
-## Deployment status (as of 2026-07-14)
+Keep the native Zoom embed on form 152, and link the booking back to the ticket
+on the **backend** by handling Zoom's own Scheduler webhook. Implementation home
+is the **`TrusteeFriend/zoom-scheduler-to-wayfront-ticket`** repo (backs
+`scheduler.trusteefriend.com`); `TrusteeFriend/wayfront-webhooks` is the related
+Cloudflare Worker.
 
-| Piece | Status | How |
-| --- | --- | --- |
-| Hidden field **"Zoom Booking Details"** (field id **7409**, default `ZOOM_BOOKING_PENDING`) | ✅ Done | Added live to form 152 via the Wayfront MCP |
-| The capture **custom code** | ⏳ Needs a manual paste | See below |
+### Sketch of the backend work
+1. Subscribe to Zoom's **Scheduler booking** webhook (booking created / updated /
+   canceled) → an endpoint on `scheduler.trusteefriend.com`.
+2. **Match** the booking to the right form-152 ticket. Candidate keys:
+   - booker email entered in the Zoom scheduler, and/or
+   - the Zoom `appointmentId`, and/or
+   - the fact the ticket `source` is `EL1R6L` (form 152) and is recent/unbooked.
+3. Write the Zoom details onto the ticket (message and/or `zoomTime`-style
+   fields) and set status → **40 Scheduled (Zoom Created)**; handle
+   reschedule/cancel → **41 / appropriate status**.
 
-**Why the code isn't deployed via API:** the Wayfront MCP `form-tool` can edit
-fields but has **no `custom_code` parameter**, so it cannot set a form's custom
-code. Only the hidden field could be added programmatically.
+Open question to resolve first: the reliable **match key**. The Wayfront form
+captures the *planning partner* (George), while the Zoom scheduler captures the
+*invitee/client* — we need one shared identifier (most likely the invitee email)
+present on both sides.
 
-## Finish deploying (one manual step)
-
-1. Open the form editor: <https://trusteefriend.wayfront.com/forms/152>
-2. Paste the **entire contents of `form-152-zoom-to-ticket.html`** into the
-   form's **Custom code** box (it already includes the existing George/Missiha
-   prefill script — so replace the current custom code with this file, don't
-   just append).
-3. Save.
-
-The script finds the hidden field by its sentinel default value
-(`ZOOM_BOOKING_PENDING`), so no field id is hard-coded; on load it clears the
-sentinel so a no-booking submit sends an empty value.
-
-## Tested
-
-The capture script was run in headless Chromium against a mock of the form DOM
-(`scratchpad/zoom_test.html`): a Zoom-origin `postMessage` booking event is
-captured into field 7409 as JSON (start/end time, timezone, join URL, meeting
-id, invitee name/email, host, plus the raw payload), a non-Zoom-origin message
-is ignored, and the sentinel is cleared on load. Result: **PASS**.
-
-## Confirm the real Zoom event shape (do this after pasting)
-
-Zoom's Scheduler-embed `postMessage` schema is not publicly documented and could
-not be exercised from the build environment, so the field mapping in
-`extractBooking()` is best-effort. To finalize:
-
-1. Open the live form, open DevTools → Console, and book a **test** assessment.
-2. Read the `[zoom->ticket] message from …` log lines — that is the real payload.
-3. If the field paths differ, adjust `extractBooking()`. The script always
-   stores the **raw** payload too, so no data is lost meanwhile.
-
-## Open question worth checking
-
-The ticket-status pipeline already has **40 "Scheduled (Zoom Created)"** /
-**41 "Rescheduled (Meeting Updated)"**, which suggests a backend may already
-receive Zoom events. If `scheduler.trusteefriend.com` already knows the booking
-*and* the ticket it belongs to, a server-side link would be cleaner and this
-front-end capture may be redundant. Worth confirming.
-
-## Alternative not taken
-
-Posting the booking as a staff-only **ticket message** via an API after booking
-(instead of a hidden field). That needs a reachable endpoint and the ticket
-number at booking time; the hidden-field approach needs neither and matches the
-existing forms. Say the word if you'd prefer the message approach instead.
+## Cleanup done
+- The hidden field **7409 "Zoom Booking Details"** (which was leaking
+  `ZOOM_BOOKING_PENDING` onto tickets) has been **removed** from form 152 via the
+  Wayfront MCP. Form is back to its 7 original fields + both conditional rules.
+- The front-end capture approach is abandoned (scripts removed from this repo).
+  The leftover capture `<script>` still in form 152's custom code is now a no-op
+  (no sentinel field to find); delete that second `<script>` block from the form
+  editor at <https://trusteefriend.wayfront.com/forms/152> when convenient. The
+  first (George/Missiha prefill) block should stay.
