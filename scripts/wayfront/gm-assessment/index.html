@@ -33,7 +33,10 @@
     .page {
       max-width: 1080px;
       margin: 0 auto;
-      padding: 56px 24px 72px;
+      padding: 56px 24px 32px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     header.brand {
@@ -172,7 +175,8 @@
       font-size: 14px;
       font-weight: 500;
       color: var(--tf-muted);
-      margin-top: 32px;
+      margin-top: auto;
+      padding-top: 40px;
     }
 
     @media (max-width: 640px) {
