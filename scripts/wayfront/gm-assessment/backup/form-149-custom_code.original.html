@@ -1,0 +1,364 @@
+<script defer src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/advancedFormat.js"></script>
+<script defer>
+    (function bean() {
+        setTimeout(() => {
+            dayjs.extend(window.dayjs_plugin_utc);
+            dayjs.extend(window.dayjs_plugin_timezone);
+            dayjs.extend(window.dayjs_plugin_advancedFormat);
+        }, 200);
+        function shufflePlanners(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                // Pick a random index from 0 to i
+                const j = Math.floor(Math.random() * (i + 1));
+
+                // Swap elements array[i] and array[j]
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+
+        const translations = {
+            english: {
+                "plannerLabel": "Planner",
+                "timezoneLabel": "Timezone",
+                "dateSelLabel": "Select a Date",
+                "availBtn": "Check Availability",
+                "slotsLabel": "Available Times",
+                "hostNotSelected": "Please select a planner above first.",
+                "availLoadErrorDate": "Could not load availability. Please try another date.",
+                "noAvail": "No availability on this date. Please try another date or another Planner.",
+                "availLoadError": "Error loading availability. Please try again."
+            },
+            spanish: {
+                "plannerLabel": "Planificador",
+                "timezoneLabel": "Zona horaria",
+                "dateSelLabel": "Seleccionar una fecha",
+                "availBtn": "Ver disponibilidad",
+                "slotsLabel": "Horarios disponibles",
+                "hostNotSelected": "Por favor seleccione un planificador.",
+                "availLoadErrorDate": "No se pudo cargar la disponibilidad. Intente otra fecha.",
+                "noAvail": "Sin disponibilidad en esta fecha. Intente otro día.",
+                "availLoadError": "Error al cargar disponibilidad. Intente de nuevo."
+            }
+        };
+
+        const plannerFieldIds = {
+            referral: "field_6852",
+            frndReq: "field_6874", // Request A Call With TrusteeFriend
+            schedule: "field_6895", // Call A TrusteeFriend
+            imagine: "field_6931", // Imagine A TrusteeFriend
+            reschedule: "field_7109"
+        };
+
+        const zoomTimeFieldIds = {
+            referral: 'field_6851',
+            frndReq: "field_6875",
+            schedule: "field_6896",
+            imagine: "field_6932",
+            reschedule: "field_7110"
+
+        };
+
+        const tzFieldIds = {
+            referral: "field_6854",
+            frndReq: "field_6876",
+            schedule: "field_6897",
+            imagine: "field_6933",
+            reschedule: "field_7111"
+
+        };
+
+        const langSelectIds = {
+            referral: "fields[6840]",
+            frndReq: "fields[6864]",
+            schedule: "fields[6887]",
+            imagine: "fields[6923]",
+            reschedule: "fields[7115]"
+
+        };
+
+        function setZoomTime(val) {
+            console.log(val);
+            for (const fieldId of Object.values(zoomTimeFieldIds)) {
+                let element = document.getElementById(fieldId);
+                if (element) {
+                    element.value = val;
+                }
+            }
+        }
+        function setZoomHost(val) {
+            for (const fieldId of Object.values(plannerFieldIds)) {
+                var element = document.getElementById(fieldId);
+                if (element) {
+                    element.value = val;
+                    return;
+                }
+            }
+        }
+        function getLocalTime(iso, tz = "America/Los_Angeles") {
+            return dayjs(iso).tz(tz).format("h:mmA z");
+        }
+        function displayAvailabilityStatus(txt, color) {
+            var el = document.getElementById('zbk-en-msg');
+            el.textContent = txt;
+            el.style.color = color || '#888';
+            el.style.display = 'block';
+        }
+
+        function selectedLang() {
+            let element = document.getElementsByName(langSelectIds.referral)[0] || document.getElementsByName(langSelectIds.frndReq)[0] || document.getElementsByName(langSelectIds.imagine)[0];
+            if (element) {
+                return (element.value || "english").toLowerCase()
+            }
+            return "english"
+        }
+
+        // console.log(document.getElementsByName("fields[6840]"));
+        let langSelect = document.getElementsByName(langSelectIds.referral)[0] || document.getElementsByName(langSelectIds.frndReq)[0] || document.getElementsByName(langSelectIds.imagine)[0];
+        if (langSelect) {
+            // setLabelsToLang(selectedLang());
+            langSelect.onchange = (event) => {
+                // "".toLowerCase
+                console.log(event);
+                // setLabelsToLang(event.target.value.toLowerCase());
+                fetchPlanners().then(() => zbkFetch());
+            }
+        } else {
+            console.log("didn't find it");
+        }
+        let datePicker = document.getElementById("zbk-en-date");
+        if (datePicker) {
+            datePicker.addEventListener("change", () => {
+                zbkFetch();
+            })
+        }
+
+        // function beans() {
+
+        const API_URL = window.location.hostname === "" ? "http://localhost:8788" : 'https://scheduler.trusteefriend.com';
+        const TZ_ABBR = {
+            'America/Los_Angeles': 'PT',
+            'America/Denver': 'MT',
+            'America/Chicago': 'CT',
+            'America/New_York': 'ET',
+            'Pacific/Honolulu': 'HT'
+        };
+        setTimeout(fetchPlanners, 1000);
+        var tzSel = document.getElementById('zbk-en-tz');
+        var di = document.getElementById('zbk-en-date');
+        var t = new Date(); t.setDate(t.getDate() + 1);
+        di.min = t.toISOString().split('T')[0];
+        di.value = di.min;
+
+        try {
+            var det = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            var opts = tzSel.options;
+            for (var i = 0; i < opts.length; i++) {
+                if (opts[i].value === det) {
+                    tzSel.selectedIndex = i;
+                    break;
+                }
+            }
+            if (/New_York|Toronto|Montreal/.test(det)) {
+                tzSel.value = 'America/New_York';
+            } else if (/Chicago|Mexico_City|Winnipeg/.test(det)) {
+                tzSel.value = 'America/Chicago';
+            } else if (/Denver|Phoenix|Edmonton/.test(det)) {
+                tzSel.value = 'America/Denver';
+            } else if (/Honolulu/.test(det)) {
+                tzSel.value = 'Pacific/Honolulu';
+            } else {
+                tzSel.value = 'America/Los_Angeles';
+            }
+        }
+        catch (e) {
+            tzSel.value = 'America/Los_Angeles';
+        }
+
+        async function fetchPlanners() {
+            document.getElementById('zbk-en-slots').style.display = 'none';
+            document.getElementById('zbk-en-grid').innerHTML = '';
+            const res = await fetch(`${API_URL}/planner/pool/${selectedLang()}`);
+            if (res.ok) {
+                let body = await res.json();
+                let plannerList = document.getElementById("zbk-planners");
+                if (plannerList) {
+                    plannerList.onchange = (event => {
+                        console.log(`Selected planner: ${event.target.value}`);
+                        setZoomHost(event.target.value);
+                        zbkFetch();
+                    });
+                    // empty the list
+                    for (let i = plannerList.length - 1; i >= 0; i--) {
+                        plannerList.remove(i);
+                    }
+
+                    // default element
+                    let noSelectionPlanner = document.createElement("option");
+                    noSelectionPlanner.value = 0;
+                    noSelectionPlanner.text = "Select A Planner"
+                    plannerList.add(noSelectionPlanner);
+
+                    // put them in a random orde
+                    let shuffled = (shufflePlanners(body || []));
+                    shuffled.forEach(planner => {
+                        let plannerEl = document.createElement("option");
+                        plannerEl.value = planner.id;
+                        plannerEl.text = planner.firstName
+                        plannerList.add(plannerEl);
+                    });
+                    // if (plannerList.length === 0) {
+                    //     let planner = document.createElement("option");
+                    //     planner.value = 0;
+                    //     planner.text = "No Planners"
+                    //     plannerList.add(planner);
+                    // }
+                    plannerList.selectedIndex = 0;
+                    setZoomHost(plannerList.value);
+                } else {
+                    console.log("couldn't find planner list");
+                }
+                zbkFetch().then(() => { console.log("fetched planner's time") });
+            }
+        }
+
+        async function zbkFetch() {
+            bootstrapFixer();
+            tzSel.disabled = true;
+            var date = di.value;
+            var tz = tzSel.value;
+            var abbr = dayjs().tz(tz).format("z");
+            var host = document.getElementById("zbk-planners").value;
+            document.getElementById('zbk-en-slots').style.display = 'none';
+            document.getElementById('zbk-en-grid').innerHTML = '';
+            if (!host || host == 0) {
+                displayAvailabilityStatus('Please select a Planner.', '#c00');
+                return;
+            }
+            displayAvailabilityStatus('\u23f3 Loading...');
+
+            setZoomTime('no');
+            setZoomHost('0');
+            try {
+                let tz = document.getElementById("zbk-en-tz").value;
+                var r = await fetch(`${API_URL}/planner/${host}/availability?date=${date}&timezone=America/Los_Angeles`);
+                var d = await r.json();
+                if (d.error) {
+                    tzSel.disabled = false;
+                    displayAvailabilityStatus('Could not load availability. Please try another date.', '#c00');
+                    return;
+                }
+                var day = (d.days || []).find(function (x) { return x.date === date; });
+                var spots = (day && day.spots || []).filter(function (s) { return s.status === 'available'; });
+                if (!spots.length) {
+                    tzSel.disabled = false;
+                    displayAvailabilityStatus(translations.english.noAvail, '#807e00');
+                    return;
+                }
+
+                document.getElementById('zbk-en-slots-lbl').textContent = `Available times (${abbr})`;
+                var grid = document.getElementById('zbk-en-grid');
+                var abbr = TZ_ABBR[tz] || 'PT';
+                spots.forEach((spot, idx) => {
+                    // time slot button
+                    var btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.dataset.iso = spot.startTime;
+                    btn.textContent = getLocalTime(spot.startTime, tz);
+                    btn.style.cssText = 'padding:8px 4px;border:1.5px solid rgb(44,78,80);border-radius:8px;background:#fff;color:rgb(44,78,80);cursor:pointer;font-size:13px;font-family:inherit;text-align:center;width:100%;';
+                    btn.onclick = function () {
+                        grid.querySelectorAll('button').forEach(function (x) {
+                            x.style.background = '#fff';
+                            x.style.color = 'rgb(44,78,80)';
+                        });
+                        btn.style.background = 'rgb(44,78,80)';
+                        btn.style.color = '#fff';
+                        setZoomTime(btn.dataset.iso);
+                        setZoomHost(host);
+                    };
+                    grid.appendChild(btn);
+                    if (idx == 0) {
+                        btn.click();
+                        setZoomTime(btn.dataset.iso);
+                        setZoomHost(host);
+                    }
+                });
+                document.getElementById('zbk-en-msg').style.display = 'none';
+                document.getElementById('zbk-en-slots').style.display = 'block';
+            } catch (e) {
+                console.error(e);
+                displayAvailabilityStatus(translations.english.availLoadError, '#c00');
+                tzSel.disabled = false;
+            }
+            tzSel.disabled = false;
+        };
+
+        let availBtn = document.getElementById("zbk-fetch-btn");
+        if (availBtn) {
+            availBtn.addEventListener("click", zbkFetch);
+        }
+
+
+        tzSel.addEventListener('change', function () {
+
+            var tz = tzSel.value;
+            console.log(tz);
+            for (const fieldId of Object.values(tzFieldIds)) {
+                let tzFrm = document.getElementById(fieldId);
+                if (tzFrm) {
+                    tzFrm.value = tz;
+                    var abbr = TZ_ABBR[tz] || 'PT';
+                    // document.getElementById('zbk-en-grid').querySelectorAll('button').forEach(function (b) {
+                    //     if (b.dataset.iso) {
+                    //         b.textContent = `${getLocalTime(b.dataset.iso, tz)} ${abbr}`;
+                    //     }
+                    // });
+                    break;
+                }
+            }
+            var abbr = dayjs().tz(tz).format("z");
+            document.getElementById('zbk-en-slots-lbl').textContent = `Available times (${abbr})`;
+            document.getElementById('zbk-en-grid').querySelectorAll('button').forEach(function (b) {
+                if (b.dataset.iso) {
+                    b.textContent = getLocalTime(b.dataset.iso, tz);
+                }
+            });
+        });
+        function bootstrapFixer() {
+            let actualDiv = document.getElementById("zbk-planners-display");
+            let actualDropdown = document.getElementById("zbk-planners");
+            actualDiv.appendChild(actualDropdown);
+            // actualDropdown.se
+            let fakeDiv = actualDiv.getElementsByClassName("btn-group bootstrap-select form-select");
+            if (fakeDiv.length != 0) {
+                fakeDiv[0].remove();
+            }
+        }
+    })();
+</script>
+
+<script>
+  (function () {
+    function lock(el, val) {
+      if (!el) return;
+      el.value = val;
+      el.readOnly = true;
+      el.style.backgroundColor = '#f3f4f6';
+      el.style.cursor = 'not-allowed';
+    }
+    function prefill() {
+      lock(document.getElementById('name_f'), 'George');
+      lock(document.getElementsByName('name_l')[0], 'Missiha');
+      lock(document.getElementById('email'), 'george@gmbrokerage.com');
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { setTimeout(prefill, 400); });
+    } else {
+      setTimeout(prefill, 400);
+    }
+  })();
+</script>
