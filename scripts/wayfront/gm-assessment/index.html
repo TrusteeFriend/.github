@@ -136,7 +136,7 @@
 
     /* Step 2: the scheduler — roomy, no frame so only Zoom's own card shows */
     .scheduler { display: none; }
-    .scheduler.active { display: block; max-width: 1000px; margin: 0 auto; }
+    .scheduler.active { display: block; max-width: 760px; margin: 0 auto; }
 
     .change-answer {
       margin: 0 0 16px;
@@ -165,7 +165,7 @@
     .embed-shell iframe {
       display: block;
       width: 100%;
-      height: 700px;
+      height: 620px;
       border: 0;
       background: transparent;
     }
@@ -186,7 +186,7 @@
       .wordmark img { height: 76px; }
       .question { padding: 36px 24px; }
       .btn { padding: 15px 32px; width: 100%; font-size: 17px; }
-      .embed-shell iframe { height: 640px; }
+      .embed-shell iframe { height: 760px; }
     }
   </style>
 </head>
@@ -291,6 +291,20 @@
           e.preventDefault();
           reset();
         });
+      });
+
+      // Best-effort auto-fit: if the Zoom scheduler posts its content height,
+      // resize the active iframe to match so each step (calendar / info form /
+      // confirmation) fits without clipping or leaving a gap. Harmless if Zoom
+      // never posts a height — the CSS height is used as the fallback.
+      window.addEventListener('message', function (e) {
+        if (typeof e.origin !== 'string' || e.origin.indexOf('zoom') === -1) return;
+        var d = e.data;
+        var h = d && (d.height || (d.payload && d.payload.height) || (d.data && d.data.height));
+        if (typeof h === 'string') h = parseInt(h, 10);
+        if (typeof h !== 'number' || isNaN(h) || h < 350 || h > 2000) return;
+        var ifr = document.querySelector('.scheduler.active iframe');
+        if (ifr) ifr.style.height = Math.round(h) + 'px';
       });
     })();
   </script>
