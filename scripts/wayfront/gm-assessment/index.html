@@ -134,10 +134,11 @@
     }
     .btn.secondary:hover { background: #f2f6f6; box-shadow: none; }
 
-    /* Step 2: the scheduler — Zoom's embed widget is fixed-size, so we pin the
-       iframe to 750x500 (its comfortable desktop size) and cap it responsively. */
+    /* Step 2: the scheduler — Zoom's embed is a fixed-size widget, so we give it
+       exactly 750x500 on desktop (its comfortable size) and let it shrink to fit
+       on narrow screens via max-width. */
     .scheduler { display: none; }
-    .scheduler.active { display: block; max-width: 750px; margin: 24px auto 0; }
+    .scheduler.active { display: block; margin: 24px auto 0; width: 750px; max-width: 100%; }
 
     .change-answer {
       margin: 0 0 16px;
@@ -165,7 +166,8 @@
 
     .embed-shell iframe {
       display: block;
-      width: 100%;
+      width: 750px;
+      max-width: 100%;
       height: 500px;
       border: 0;
       background: transparent;
