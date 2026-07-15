@@ -134,10 +134,10 @@
     }
     .btn.secondary:hover { background: #f2f6f6; box-shadow: none; }
 
-    /* Step 2: the scheduler. Zoom only renders its wide two-column layout above
-       its own desktop breakpoint, so give the iframe the full page width. */
+    /* Step 2: the scheduler — Zoom's embed widget is fixed-size, so we pin the
+       iframe to 750x500 (its comfortable desktop size) and cap it responsively. */
     .scheduler { display: none; }
-    .scheduler.active { display: block; max-width: 100%; margin: 0 auto; }
+    .scheduler.active { display: block; max-width: 750px; margin: 24px auto 0; }
 
     .change-answer {
       margin: 0 0 16px;
@@ -166,7 +166,7 @@
     .embed-shell iframe {
       display: block;
       width: 100%;
-      height: 720px;
+      height: 500px;
       border: 0;
       background: transparent;
     }
@@ -187,7 +187,7 @@
       .wordmark img { height: 76px; }
       .question { padding: 36px 24px; }
       .btn { padding: 15px 32px; width: 100%; font-size: 17px; }
-      .embed-shell iframe { height: 780px; }
+      .embed-shell iframe { height: 620px; }
     }
   </style>
 </head>
@@ -210,7 +210,7 @@
     <section class="scheduler" id="scheduler-yes" aria-hidden="true">
       <p class="change-answer"><a data-action="change">&larr; Change answer</a></p>
       <div class="embed-shell" data-embed="yes"
-           data-src="https://trusteefriend.zoom.us/zbook/alex/trusteefriend-assessment-gm?embedStyle=%7B%22buttonColor%22%3A%22%232c4e50%22%7D&embed=true">
+           data-src="https://trusteefriend.zoom.us/zbook/alex/trusteefriend-assessment-gm-2?embedStyle=%7B%22buttonColor%22%3A%22%232c4e50%22%2C%22fontFamily%22%3A%22Arial%22%7D&embed=true">
       </div>
     </section>
 
@@ -218,7 +218,7 @@
     <section class="scheduler" id="scheduler-no" aria-hidden="true">
       <p class="change-answer"><a data-action="change">&larr; Change answer</a></p>
       <div class="embed-shell" data-embed="no"
-           data-src="https://trusteefriend.zoom.us/zbook/alex/trusteefriend-assessment-gm-2?embedStyle=%7B%22buttonColor%22%3A%22%232c4e50%22%7D&embed=true">
+           data-src="https://trusteefriend.zoom.us/zbook/alex/trusteefriend-assessment-gm?embedStyle=%7B%22buttonColor%22%3A%22%232c4e50%22%2C%22fontFamily%22%3A%22Arial%22%7D&embed=true">
       </div>
     </section>
 
