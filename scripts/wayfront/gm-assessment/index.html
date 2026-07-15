@@ -134,9 +134,10 @@
     }
     .btn.secondary:hover { background: #f2f6f6; box-shadow: none; }
 
-    /* Step 2: the scheduler — roomy, no frame so only Zoom's own card shows */
+    /* Step 2: the scheduler. Zoom only renders its wide two-column layout above
+       its own desktop breakpoint, so give the iframe the full page width. */
     .scheduler { display: none; }
-    .scheduler.active { display: block; max-width: 820px; margin: 0 auto; }
+    .scheduler.active { display: block; max-width: 100%; margin: 0 auto; }
 
     .change-answer {
       margin: 0 0 16px;
