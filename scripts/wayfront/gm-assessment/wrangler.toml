@@ -1,0 +1,16 @@
+name = "gm-brokerage-page"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+# Serve the page at the exact Wayfront URL. Both routes cover the path with and
+# without a trailing slash. zone_name must be the Cloudflare zone that
+# app.trusteefriend.com lives under.
+routes = [
+  { pattern = "app.trusteefriend.com/contact/gm-brokerage", zone_name = "trusteefriend.com" },
+  { pattern = "app.trusteefriend.com/contact/gm-brokerage/", zone_name = "trusteefriend.com" },
+]
+
+# Let `import HTML from "./index.html"` pull the file in as a text module.
+rules = [
+  { type = "Text", globs = ["**/*.html"], fallthrough = true },
+]
