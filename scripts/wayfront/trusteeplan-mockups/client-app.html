@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>trusteeplan — Static Mockups</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{
+  --teal:#799671;
+  --teal-dark:#5f7b58;
+  --teal-text:#6e8a64;
+  --sidebar-bg:#eeeeee;
+  --sidebar-hover:#e3e3e3;
+  --main-bg:#eceeee;
+  --field-bg:#efefef;
+  --text:#3a3a3a;
+  --text-light:#8c8c8c;
+  --heading:#222222;
+  --org-bg:#2c2c2c;
+  --red:#c0504d;
+  --olive:#455a64;
+  --green:#799671;
+  --line:#e4e4e4;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Manrope',-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#2b2b2b;color:var(--text);}
+.tnr{font-family:'Times New Roman',Georgia,serif;font-style:italic;font-size:1.18em;line-height:1;}
+/* viewer bar */
+.viewer{position:sticky;top:0;z-index:50;background:#1f1f1f;color:#eee;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #000;}
+.viewer h1{font-size:14px;margin:0;font-weight:600;letter-spacing:.3px;}
+.viewer .sub{font-size:12px;color:#999;}
+.viewer select{flex:0 0 auto;min-width:340px;padding:6px 8px;border-radius:6px;border:1px solid #444;background:#2b2b2b;color:#eee;font-size:13px;}
+.viewer button{background:#3a3a3a;color:#eee;border:1px solid #555;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;}
+.viewer button:hover{background:#4a4a4a;}
+.viewer .spacer{flex:1;}
+.viewer .count{font-size:12px;color:#aaa;min-width:60px;text-align:right;}
+.stage{padding:22px;display:flex;justify-content:center;}
+/* app frame */
+.frame{width:1280px;max-width:100%;height:820px;background:#fff;border-radius:10px;overflow:hidden;position:relative;box-shadow:0 14px 50px rgba(0,0,0,.45);display:flex;flex-direction:column;}
+.topbar{height:60px;flex:0 0 60px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+.topbar.dark{background:#f4f4f4;}
+.brand{color:#1a1a1a;font-family:'Times New Roman',Georgia,serif;font-weight:700;font-size:25px;letter-spacing:-.3px;}
+.brand i{font-style:italic;}
+.brand .logo{width:30px;height:30px;flex:0 0 30px;display:flex;}
+.brand sup{font-size:9px;font-weight:600;color:var(--teal);}
+.topright{display:flex;align-items:center;gap:14px;}
+.chat-pill{background:#fff;border:1px solid #dcdcdc;border-radius:18px;display:flex;align-items:center;gap:6px;padding:5px 14px;font-size:12px;font-weight:700;color:#555;letter-spacing:.5px;}
+.ava{width:34px;height:34px;border-radius:50%;background:var(--olive);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;}
+.layout{flex:1;display:flex;min-height:0;}
+/* sidebar */
+.sidebar{width:288px;flex:0 0 288px;background:var(--sidebar-bg);display:flex;flex-direction:column;position:relative;border-right:1px solid #dcdcdc;overflow:hidden;}
+.side-scroll{flex:1;overflow-y:auto;padding-bottom:140px;}
+.side-welcome{padding:18px 20px 14px;display:flex;flex-direction:column;gap:8px;background:#e3e3e3;}
+.side-welcome .ava{width:46px;height:46px;background:var(--green);font-size:18px;}
+.side-welcome .wb{font-size:15px;color:#555;}
+.nav{padding:6px 0;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 20px;font-size:15px;color:#555;cursor:default;}
+.nav-item .ico{width:20px;height:20px;flex:0 0 20px;color:#666;}
+.nav-item.active{font-weight:700;color:#333;}
+.nav-divider{height:1px;background:#d8d8d8;margin:6px 20px;}
+.submenu{padding:2px 0 0;}
+.sub-group{font-weight:700;color:#555;font-size:14px;padding:12px 20px 4px;}
+.sub-doc{color:#9a9a9a;font-size:14px;padding:5px 20px;}
+.sub-step{display:flex;align-items:center;justify-content:space-between;padding:7px 20px 7px 20px;font-size:14px;color:#6a6a6a;}
+.sub-step.active{font-weight:700;color:#333;}
+.sub-step .err{color:var(--red);font-size:13px;}
+.lock{color:#9a9a9a;font-size:12px;}
+.free{background:#dde7d8;color:#5f7b58;font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:.5px;}
+.sub-line{display:flex;align-items:center;gap:8px;}
+/* org card */
+.orgcard{position:absolute;left:12px;right:12px;bottom:30px;background:#fff;color:#2a2a2a;padding:13px 14px;display:flex;flex-direction:column;gap:9px;border-radius:14px;border:1px solid #ededed;box-shadow:0 4px 14px rgba(0,0,0,.05);}
+.orgcard .top{display:flex;align-items:center;gap:11px;}
+.orgcard .ava{width:38px;height:38px;background:#e6ede1;color:#5f7b58;font-size:14px;}
+.orgcard .nm{font-size:13px;line-height:1.32;}
+.orgcard .nm .sub{color:#a3a3a3;font-size:11px;font-weight:500;}
+.orgcard .nm b{display:block;color:#2a2a2a;font-size:13.5px;font-weight:700;}
+.orgcard .ct{font-size:12px;color:#8c8c8c;display:flex;align-items:center;gap:9px;}
+.orgcard .ct svg{color:#799671;flex:0 0 auto;}
+.poweredby{position:absolute;left:20px;bottom:6px;font-size:11px;color:#b3b3b3;}
+/* content */
+.content{flex:1;background:var(--main-bg);position:relative;overflow-y:auto;}
+.content-pad{padding:26px 30px;}
+.panel{background:#fff;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.07);}
+.panel-head{display:flex;align-items:flex-start;justify-content:space-between;padding:22px 26px 0;}
+.titleblock{display:flex;gap:12px;}
+.accent{width:5px;background:#cfcfcf;border-radius:2px;align-self:stretch;}
+.doc-small{font-size:15px;color:#777;}
+.doc-small b{color:#555;}
+.doc-big{font-size:24px;color:var(--teal-text);font-weight:400;margin-top:2px;}
+.cloud{color:#bdbdbd;font-size:22px;}
+.hr{height:1px;background:var(--line);margin:16px 26px 0;}
+.body{padding:22px 26px 26px;}
+.layout-tips{display:grid;grid-template-columns:1fr 270px;}
+.form-col{padding:22px 26px 26px;}
+.tips{background:#f6f6f6;border-left:1px solid #ededed;padding:20px 20px;font-size:12.5px;color:#777;line-height:1.5;}
+.tips-q{color:var(--teal-text);font-size:13.5px;margin:0 0 5px;}
+.tips-p{margin:0 0 16px;}
+.tips-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#9a9a9a;gap:14px;padding-top:30px;}
+.qmark{width:74px;height:74px;border-radius:50%;background:#cfcfcf;color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;}
+.section-title{font-size:18px;font-weight:700;color:var(--heading);margin:0 0 18px;}
+.subtitle{font-size:13px;color:#888;margin:-12px 0 18px;}
+.field{background:var(--field-bg);border-radius:3px;padding:8px 14px;margin-bottom:4px;}
+.field-label{font-size:11px;color:#8c8c8c;}
+.field-label.teal{color:var(--teal-text);}
+.field-val{font-size:15px;color:#444;min-height:20px;}
+.field-val.ph{color:#aeaeae;}
+.field.sel{display:flex;align-items:center;justify-content:space-between;}
+.field.sel .chev{color:#9a9a9a;font-size:11px;}
+.field.err{border-bottom:2px solid var(--red);}
+.field-help{font-size:12.5px;color:#8a8a8a;margin:2px 2px 16px;}
+.err-msg{color:var(--red);font-size:12.5px;margin:4px 2px 14px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.row2.tight{margin-bottom:4px;}
+.gender-lbl{font-size:15px;color:#666;margin:14px 0 8px;}
+.radios{display:flex;gap:26px;align-items:center;}
+.radios.stack{flex-direction:column;align-items:flex-start;gap:12px;}
+.radio{display:flex;align-items:center;gap:9px;font-size:15px;color:#555;}
+.radio .dot{width:18px;height:18px;border-radius:50%;border:2px solid #b5b5b5;display:flex;align-items:center;justify-content:center;}
+.radio.on .dot{border-color:var(--teal);}
+.radio.on .dot::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--teal);}
+.check{width:18px;height:18px;border-radius:3px;border:2px solid #b5b5b5;display:inline-flex;align-items:center;justify-content:center;}
+.check.on{background:var(--teal);border-color:var(--teal);color:#fff;font-size:12px;}
+.btn-row{display:flex;justify-content:flex-end;gap:12px;margin-top:24px;}
+.btn{border:none;border-radius:4px;padding:11px 26px;font-size:14px;font-weight:600;color:#fff;cursor:default;}
+.btn.teal{background:var(--teal);}
+.btn.gray{background:#bdbdbd;}
+.btn.outline{background:#fff;border:1px solid var(--teal);color:var(--teal);}
+/* bottom step nav */
+.stepnav{position:absolute;bottom:0;left:0;right:0;height:54px;background:#fff;border-top:1px solid #eee;display:flex;align-items:center;justify-content:space-between;padding:0 22px;z-index:3;}
+.stepnav .side{width:30px;color:#9a9a9a;font-size:20px;display:flex;align-items:center;}
+.dots{display:flex;align-items:center;gap:9px;}
+.dot{width:9px;height:9px;border-radius:50%;background:#cdddc7;}
+.dot.done{background:#a9c2a0;}
+.dot.active{background:#799671;}
+.dot.todo{background:#d6d6d6;}
+.dot.pink{background:#c2b7a6;}
+.dotline{width:14px;height:2px;background:#dcdcdc;}
+/* fab */
+.fab-wrap{position:absolute;right:26px;bottom:26px;display:flex;flex-direction:column;align-items:flex-end;gap:14px;}
+.fab-item{display:flex;align-items:center;gap:12px;}
+.fab-label{background:#fff;border-radius:4px;padding:6px 12px;font-size:13px;color:#555;box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.fab-btn{width:46px;height:46px;border-radius:50%;background:#fff;color:#777;box-shadow:0 2px 6px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:22px;}
+.fab-close{width:52px;height:52px;border-radius:50%;background:#7d7d7d;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:24px;}
+.fab-main{width:52px;height:52px;border-radius:50%;background:var(--teal);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:22px;}
+/* dim overlay behind modal/fab */
+.dim{position:absolute;inset:0;background:rgba(80,90,95,.55);}
+/* welcome empty state */
+.welcome-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 16%;gap:18px;color:#7a7a7a;}
+.welcome-empty h2{font-size:34px;font-weight:400;color:#6a6a6a;margin:0;}
+.welcome-empty p{font-size:15px;line-height:1.5;margin:0;}
+/* modal (T&C / preview) */
+.modal-overlay{position:absolute;inset:0;background:rgba(70,80,85,.55);display:flex;align-items:center;justify-content:center;}
+.modal{background:#fff;border-radius:6px;width:840px;max-width:92%;max-height:86%;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.3);}
+.modal-brandbar{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid #f0f0f0;}
+.modal-brandbar .brand{color:#222;}
+.user-pill{border:1px solid #dadada;border-radius:6px;display:flex;align-items:center;gap:8px;padding:6px 12px;font-size:13px;color:#555;}
+.user-pill .ava{width:24px;height:24px;font-size:11px;background:var(--green);}
+.tc-bar{display:flex;align-items:center;justify-content:space-between;padding:13px 22px;background:#f1f1f1;}
+.tc-bar.agreed{background:#eef3ec;}
+.tc-bar .t{color:var(--teal-text);font-weight:700;font-size:15px;}
+.tc-bar .meta{display:flex;align-items:center;gap:8px;color:#8a8a8a;font-size:13px;}
+.tc-bar .chev{color:#9a9a9a;}
+.check-circle{width:22px;height:22px;border-radius:50%;background:#7d7d7d;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.modal-body{padding:24px 30px;overflow-y:auto;color:#555;}
+.modal-body h3{text-align:center;font-weight:400;font-size:26px;color:#666;margin:0 0 16px;}
+.modal-body h4{font-size:17px;color:#555;margin:20px 0 8px;}
+.modal-body p{font-size:14px;line-height:1.55;margin:0 0 10px;}
+.modal-body .clause{font-weight:700;}
+.agree-banner{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#eef3ec;border:1px solid #dde7d8;border-radius:4px;padding:10px 16px;margin:14px 0;}
+.agree-banner span{font-size:13.5px;color:#777;}
+.btn-sm{border:none;border-radius:4px;padding:8px 20px;color:#fff;font-weight:600;font-size:13px;background:var(--teal);}
+.modal-foot{display:flex;justify-content:flex-end;padding:14px 22px;border-top:1px solid #f0f0f0;}
+.modal-empty{min-height:320px;}
+/* prepare list / doc package */
+.prepare h4{color:var(--teal-text);font-size:15px;margin:6px 0 10px;}
+.prepare-row{display:flex;align-items:center;gap:12px;border:1px solid #eee;padding:14px 16px;}
+.prepare-row.sel{background:#f3f3f3;}
+.pp-ava{width:36px;height:36px;border-radius:50%;background:#5b5b5b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.pp-ava.green{background:#799671;}
+.pp-name{font-size:15px;color:#444;}
+.pp-role{font-size:12px;color:#999;}
+.pkg-list{margin-top:14px;}
+.pkg-list .doc{display:flex;align-items:center;gap:10px;font-size:14px;color:#777;padding:5px 0;}
+.muted-link{color:var(--teal-text);}
+/* contact cards */
+.contacts-title{text-align:center;font-size:26px;font-weight:400;color:#6a6a6a;margin:6px 0 22px;}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.contact-card{background:#fff;border-radius:4px;display:flex;align-items:center;gap:14px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.contact-ava{width:42px;height:42px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.contact-info{flex:1;}
+.contact-name{font-size:16px;color:#444;}
+.contact-role{font-size:13px;color:#9a9a9a;}
+.contact-actions{display:flex;gap:14px;color:#9a9a9a;font-size:16px;}
+.contacts-note{text-align:center;font-size:14px;color:#888;max-width:620px;margin:22px auto 0;line-height:1.5;}
+/* repeatable item card */
+.item-card{border:1px solid #ededed;border-radius:4px;background:#fafafa;margin-bottom:10px;}
+.item-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;color:#999;font-size:14px;}
+.item-head .left{display:flex;align-items:center;gap:12px;}
+.item-head .right{display:flex;align-items:center;gap:14px;color:#9a9a9a;}
+.item-body{padding:6px 18px 18px;}
+.grip{color:#bbb;letter-spacing:-2px;}
+.add-row{border:1px solid #ededed;border-radius:4px;text-align:center;padding:14px;color:#777;font-size:14px;}
+.mini-title{font-weight:700;color:#555;font-size:15px;margin:14px 0 8px;}
+.bequest-row{display:flex;align-items:center;gap:8px;padding:12px 16px;border:1px solid #eee;border-radius:4px;}
+/* files table */
+.files-head{display:flex;align-items:center;justify-content:space-between;padding:18px 26px 8px;}
+.files-head .ttl{display:flex;align-items:center;gap:12px;font-size:22px;color:#666;}
+.files-actions{display:flex;align-items:center;gap:10px;}
+.circle-btn{width:34px;height:34px;border-radius:50%;border:1px solid #d6d6d6;background:#fff;color:#777;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.circle-btn.teal{background:var(--teal);color:#fff;border:none;font-size:22px;}
+.files-wrap{display:flex;}
+.files-main{flex:1;}
+.select-bar{display:flex;align-items:center;gap:8px;padding:8px 26px;color:#888;}
+.ftable{width:100%;border-collapse:collapse;font-size:14px;}
+.ftable th{text-align:left;color:#777;font-weight:700;padding:10px 12px;border-bottom:1px solid #eee;}
+.ftable td{padding:14px 12px;border-bottom:1px solid #f1f1f1;color:#555;vertical-align:middle;}
+.ftable tr.sel td{background:#fff;}
+.ftable tr.sel{outline:1.5px solid var(--teal);}
+.fname{display:flex;align-items:center;gap:10px;}
+.fname .fico{color:#9a9a9a;}
+.kebab{color:#999;text-align:center;}
+.mod{color:#9a9a9a;font-size:13px;}
+.details-panel{width:300px;flex:0 0 300px;border-left:1px solid #eee;padding:20px;background:#fafafa;}
+.details-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#9a9a9a;gap:12px;text-align:center;}
+.info-circle{width:42px;height:42px;border-radius:50%;border:2px solid #bdbdbd;color:#999;display:flex;align-items:center;justify-content:center;font-style:italic;font-weight:700;}
+.dp-title{font-weight:700;color:#555;font-size:14px;margin-bottom:12px;}
+.thumb{border:1px solid #e2e2e2;background:#fff;height:230px;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:12px;text-align:center;padding:10px;overflow:hidden;}
+.thumb-nav{display:flex;align-items:center;justify-content:center;gap:24px;color:#888;margin:10px 0;font-size:14px;}
+.dp-section{color:var(--teal-text);font-weight:700;font-size:14px;margin:14px 0 8px;}
+.dp-row{margin-bottom:10px;}
+.dp-row .k{font-weight:700;color:#555;font-size:13px;}
+.dp-row .v{color:#888;font-size:13px;}
+.dp-actions{display:flex;gap:18px;justify-content:flex-end;color:#888;font-size:16px;margin-top:18px;}
+.menu-pop{position:absolute;right:26px;top:62px;background:#fff;border-radius:6px;box-shadow:0 6px 24px rgba(0,0,0,.18);padding:6px 0;width:180px;z-index:5;}
+.menu-pop .mi{display:flex;align-items:center;gap:12px;padding:11px 16px;font-size:14px;color:#555;}
+svg{display:block;}
+
+.store-wrap{max-width:1000px;margin:0 auto;}
+.store-title{text-align:center;font-size:28px;color:#3a3a3a;font-weight:800;margin:4px 0 4px;letter-spacing:-.4px;}
+.store-sub{text-align:center;color:#8a8a8a;font-size:15px;margin-bottom:26px;}
+.store-section-label{font-size:12px;font-weight:700;color:#a0a0a0;text-transform:uppercase;letter-spacing:.7px;margin:24px 0 12px;}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;}
+.cat-card{background:#fff;border:1px solid #ededed;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:11px;box-shadow:0 2px 10px rgba(0,0,0,.04);position:relative;}
+.cat-card.feat{border:1.5px solid #799671;box-shadow:0 8px 24px rgba(121,150,113,.20);}
+.cat-ico{width:46px;height:46px;border-radius:12px;background:#e6ede1;color:#5f7b58;display:flex;align-items:center;justify-content:center;}
+.cat-name{font-weight:700;color:#222;font-size:15.5px;line-height:1.25;}
+.cat-desc{font-size:13px;color:#8a8a8a;line-height:1.5;flex:1;}
+.cat-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;min-height:38px;}
+.cat-status{display:flex;align-items:center;gap:6px;color:#5f7b58;font-size:13px;font-weight:700;}
+.cat-status.muted{color:#a8a8a8;}
+.cat-price{font-weight:800;color:#222;font-size:19px;}
+.cat-price small{font-weight:600;color:#9a9a9a;font-size:11px;}
+.btn-buy{background:#799671;color:#fff;border:none;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700;cursor:default;}
+.btn-ghost{background:#fff;border:1px solid #cdd6c9;color:#5f7b58;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700;cursor:default;}
+.ribbon{position:absolute;top:-10px;right:18px;background:#799671;color:#fff;font-size:10px;font-weight:700;letter-spacing:.6px;padding:3px 11px;border-radius:20px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div class="viewer">
+  <h1>trustee<i>plan</i></h1>
+  <span class="sub">static mockups</span>
+  <select id="picker" onchange="show(this.value)"></select>
+  <button onclick="step(-1)">‹ Prev</button>
+  <button onclick="step(1)">Next ›</button>
+  <span class="spacer"></span>
+  <span class="count" id="count"></span>
+</div>
+<div class="stage"><div id="root"></div></div>
+
+<script>
+/* ---------- shared building blocks ---------- */
+const ICON = {
+  profile:'<svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>',
+  family:'<svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="9" r="3"/><circle cx="17" cy="9.5" r="2.4"/><path d="M3 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 14.2c2.5 0 4.5 1.9 4.5 4.8"/></svg>',
+  signpost:'<svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3.2A1.2 1.2 0 0 1 10.2 2h3.6A1.2 1.2 0 0 1 15 3.2V4"/><path d="M9 10h6M9 14h6M9 18h4"/></svg>',
+  files:'<svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5a2 2 0 0 1 2-2h3.6a2 2 0 0 1 1.5.7l1 1.1H19a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  basket:'<svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 11a2 2 0 0 1-2 1.8H9A2 2 0 0 1 7 19z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>',
+  chat:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>',
+  cloud:'<svg width="22" height="22" viewBox="0 0 24 24" fill="#cdcdcd"><path d="M6 17a4 4 0 0 1 .5-8 5 5 0 0 1 9.6 1.2A3.5 3.5 0 0 1 17 17z"/><path d="M10 13l2 2 3-3.5" stroke="#fff" stroke-width="1.6" fill="none"/></svg>',
+  trash:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg>',
+  pencil:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>',
+  download:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4v10m0 0l-4-4m4 4l4-4M5 19h14"/></svg>',
+  file:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>',
+  home:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 11l8-7 8 7M6 10v9h12v-9"/></svg>',
+  refresh:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12a7 7 0 1 1-2-5"/><path d="M19 5v4h-4"/></svg>',
+  folder:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h6l2 2h10v10H3z"/></svg>',
+  upload:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V6m0 0l-4 4m4-4l4 4M5 19h14"/></svg>',
+};
+const LOGO = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width='100%' zoomAndPan="magnify" viewBox="0 0 375 374.999991" height='100%' preserveAspectRatio="xMidYMid meet" version="1.0"><defs><clipPath id="7ebc1f66e0"><path d="M 56.042969 56.042969 L 318.957031 56.042969 L 318.957031 318.957031 L 56.042969 318.957031 Z M 56.042969 56.042969 " clip-rule="nonzero"/></clipPath><clipPath id="2f0a65bd53"><path d="M 187.5 56.042969 C 114.898438 56.042969 56.042969 114.898438 56.042969 187.5 C 56.042969 260.101562 114.898438 318.957031 187.5 318.957031 C 260.101562 318.957031 318.957031 260.101562 318.957031 187.5 C 318.957031 114.898438 260.101562 56.042969 187.5 56.042969 Z M 187.5 56.042969 " clip-rule="nonzero"/></clipPath><clipPath id="03873c5117"><path d="M 0.0429688 0.0429688 L 262.957031 0.0429688 L 262.957031 262.957031 L 0.0429688 262.957031 Z M 0.0429688 0.0429688 " clip-rule="nonzero"/></clipPath><clipPath id="d623fa49ad"><path d="M 131.5 0.0429688 C 58.898438 0.0429688 0.0429688 58.898438 0.0429688 131.5 C 0.0429688 204.101562 58.898438 262.957031 131.5 262.957031 C 204.101562 262.957031 262.957031 204.101562 262.957031 131.5 C 262.957031 58.898438 204.101562 0.0429688 131.5 0.0429688 Z M 131.5 0.0429688 " clip-rule="nonzero"/></clipPath><clipPath id="e2f935b118"><rect x="0" width="263" y="0" height="263"/></clipPath><clipPath id="2fbd8b75bf"><path d="M 159.53125 91.878906 L 192 91.878906 L 192 283.128906 L 159.53125 283.128906 Z M 159.53125 91.878906 " clip-rule="nonzero"/></clipPath><clipPath id="f98b5d27ff"><path d="M 183 91.878906 L 215.78125 91.878906 L 215.78125 283.128906 L 183 283.128906 Z M 183 91.878906 " clip-rule="nonzero"/></clipPath><clipPath id="3d18c1e164"><path d="M 159.53125 91.878906 L 192 91.878906 L 192 283.128906 L 159.53125 283.128906 Z M 159.53125 91.878906 " clip-rule="nonzero"/></clipPath><clipPath id="cf133aeb13"><path d="M 183 91.878906 L 215.78125 91.878906 L 215.78125 283.128906 L 183 283.128906 Z M 183 91.878906 " clip-rule="nonzero"/></clipPath></defs><g clip-path="url(#7ebc1f66e0)"><g clip-path="url(#2f0a65bd53)"><g transform="matrix(1, 0, 0, 1, 56, 56)"><g clip-path="url(#e2f935b118)"><g clip-path="url(#03873c5117)"><g clip-path="url(#d623fa49ad)"><path fill="#799671" d="M 0.0429688 0.0429688 L 262.957031 0.0429688 L 262.957031 262.957031 L 0.0429688 262.957031 Z M 0.0429688 0.0429688 " fill-opacity="1" fill-rule="nonzero"/></g></g></g></g></g></g><g clip-path="url(#2fbd8b75bf)"><path fill="#455a64" d="M 179.507812 283.117188 L 163.570312 283.117188 C 161.367188 283.117188 159.585938 281.332031 159.585938 279.132812 C 159.585938 276.933594 161.367188 275.148438 163.570312 275.148438 L 179.507812 275.148438 C 181.707031 275.148438 183.488281 273.363281 183.488281 271.164062 L 183.488281 103.832031 C 183.488281 101.628906 181.707031 99.847656 179.507812 99.847656 L 163.570312 99.847656 C 161.367188 99.847656 159.585938 98.0625 159.585938 95.863281 C 159.585938 93.660156 161.367188 91.878906 163.570312 91.878906 L 179.507812 91.878906 C 186.105469 91.878906 191.457031 97.230469 191.457031 103.832031 L 191.457031 271.164062 C 191.457031 277.765625 186.105469 283.117188 179.507812 283.117188 Z M 179.507812 283.117188 " fill-opacity="1" fill-rule="nonzero"/></g><g clip-path="url(#f98b5d27ff)"><path fill="#455a64" d="M 211.378906 283.117188 L 195.441406 283.117188 C 188.839844 283.117188 183.488281 277.765625 183.488281 271.164062 L 183.488281 103.832031 C 183.488281 97.230469 188.839844 91.878906 195.441406 91.878906 L 211.378906 91.878906 C 213.578125 91.878906 215.363281 93.660156 215.363281 95.863281 C 215.363281 98.0625 213.578125 99.847656 211.378906 99.847656 L 195.441406 99.847656 C 193.242188 99.847656 191.457031 101.628906 191.457031 103.832031 L 191.457031 271.164062 C 191.457031 273.363281 193.242188 275.148438 195.441406 275.148438 L 211.378906 275.148438 C 213.578125 275.148438 215.363281 276.933594 215.363281 279.132812 C 215.363281 281.332031 213.578125 283.117188 211.378906 283.117188 Z M 211.378906 283.117188 " fill-opacity="1" fill-rule="nonzero"/></g><g clip-path="url(#3d18c1e164)"><path fill="#ffffff" d="M 179.507812 283.117188 L 163.570312 283.117188 C 161.367188 283.117188 159.585938 281.332031 159.585938 279.132812 C 159.585938 276.933594 161.367188 275.148438 163.570312 275.148438 L 179.507812 275.148438 C 181.707031 275.148438 183.488281 273.363281 183.488281 271.164062 L 183.488281 103.832031 C 183.488281 101.628906 181.707031 99.847656 179.507812 99.847656 L 163.570312 99.847656 C 161.367188 99.847656 159.585938 98.0625 159.585938 95.863281 C 159.585938 93.660156 161.367188 91.878906 163.570312 91.878906 L 179.507812 91.878906 C 186.105469 91.878906 191.457031 97.230469 191.457031 103.832031 L 191.457031 271.164062 C 191.457031 277.765625 186.105469 283.117188 179.507812 283.117188 Z M 179.507812 283.117188 " fill-opacity="1" fill-rule="nonzero"/></g><g clip-path="url(#cf133aeb13)"><path fill="#ffffff" d="M 211.378906 283.117188 L 195.441406 283.117188 C 188.839844 283.117188 183.488281 277.765625 183.488281 271.164062 L 183.488281 103.832031 C 183.488281 97.230469 188.839844 91.878906 195.441406 91.878906 L 211.378906 91.878906 C 213.578125 91.878906 215.363281 93.660156 215.363281 95.863281 C 215.363281 98.0625 213.578125 99.847656 211.378906 99.847656 L 195.441406 99.847656 C 193.242188 99.847656 191.457031 101.628906 191.457031 103.832031 L 191.457031 271.164062 C 191.457031 273.363281 193.242188 275.148438 195.441406 275.148438 L 211.378906 275.148438 C 213.578125 275.148438 215.363281 276.933594 215.363281 279.132812 C 215.363281 281.332031 213.578125 283.117188 211.378906 283.117188 Z M 211.378906 283.117188 " fill-opacity="1" fill-rule="nonzero"/></g></svg>`;
+
+function field(label, value, opts={}){
+  const ph = opts.placeholder ? ' ph' : '';
+  const teal = opts.teal ? ' teal' : '';
+  const err = opts.error ? ' err' : '';
+  let h = `<div class="field${err}"><div class="field-label${teal}">${label}</div><div class="field-val${ph}">${value||'&nbsp;'}</div></div>`;
+  if(opts.help) h += `<div class="field-help">${opts.help}</div>`;
+  if(opts.errMsg) h += `<div class="err-msg">${opts.errMsg}</div>`;
+  return h;
+}
+function selectField(label, value, opts={}){
+  const ph = opts.placeholder ? ' ph' : '';
+  const err = opts.error ? ' err' : '';
+  let h = `<div class="field sel${err}"><div><div class="field-label">${label}</div><div class="field-val${ph}">${value||'&nbsp;'}</div></div><div class="chev">▼</div></div>`;
+  if(opts.help) h += `<div class="field-help">${opts.help}</div>`;
+  if(opts.errMsg) h += `<div class="err-msg">${opts.errMsg}</div>`;
+  return h;
+}
+function radios(name, opts, stack){
+  const r = opts.map(o=>`<label class="radio ${o.on?'on':''}"><span class="dot"></span>${o.label}</label>`).join('');
+  return `<div class="radios ${stack?'stack':''}">${r}</div>`;
+}
+function btnRow(btns){
+  return `<div class="btn-row">${btns.map(b=>`<button class="btn ${b.kind||'teal'}">${b.t}</button>`).join('')}</div>`;
+}
+function tips(items){
+  return `<div class="tips">${items.map(i=>`<div class="tips-q">${i.q}</div><p class="tips-p">${i.a}</p>`).join('')}</div>`;
+}
+function tipsEmpty(){
+  return `<div class="tips"><div class="tips-empty"><div class="qmark">?</div><div>No Tips Available</div></div></div>`;
+}
+function dots(cfg){
+  // cfg: array of 'done','active','todo','pink','line'
+  return `<div class="dots">${cfg.map(c=> c==='line'?'<span class="dotline"></span>':`<span class="dot ${c}"></span>`).join('')}</div>`;
+}
+function stepnav(opts){
+  const left = opts.left==='x' ? '✕' : (opts.left==='back' ? '‹' : '');
+  const right = opts.right==='check' ? '✓' : (opts.right==='fwd' ? '›' : '');
+  return `<div class="stepnav"><div class="side">${left}</div>${dots(opts.dots||[])}<div class="side" style="justify-content:flex-end">${right}</div></div>`;
+}
+</script>
+
+<script>
+/* ---------- screen registry ---------- */
+const SCREENS = [];
+function reg(label, def){ SCREENS.push(Object.assign({label}, def)); }
+
+/* sidebar renderers */
+const NAV_MAIN = [
+  {key:'questionnaire', ico:'signpost', t:'Questionnaire'},
+  {key:'files', ico:'files', t:'Files'},
+  {div:true},
+  {key:'plans', ico:'basket', t:'Products'},
+];
+function navItems(active){
+  return NAV_MAIN.map(n=> n.div ? '<div class="nav-divider"></div>' :
+    `<div class="nav-item ${n.key===active?'active':''}">${ICON[n.ico]}<span>${n.t}</span></div>`).join('');
+}
+const STEPS = ['Decision','Representatives','Representatives','Representatives','Representatives','Representatives','Caring for your Pets','Personal Residence','Other Real Estate','Specific Bequests','Residuary Estate','Residuary Estate','Ultimate Disposition','Retirement Plans Provisions (Optional)'];
+function smartguideMenu(){
+  return `<div class="submenu">
+    <div class="sub-group">Property &amp; Guardianship</div>
+    <div class="sub-doc">Last Will + Living Trust</div>
+    
+    <div class="sub-group">Healthcare</div>
+    <div class="sub-doc">Healthcare Documents</div>
+    <div class="sub-group">Finances</div>
+    <div class="sub-doc sub-line">Power of Attorney <span class="free">FREE</span></div>
+    <div class="sub-group">Animal Care</div>
+    <div class="sub-doc">Pet Trust</div>
+  </div>`;
+}
+function interviewMenu(activeIdx, errs=[]){
+  const steps = STEPS.map((s,i)=>{
+    const err = errs.includes(i) ? `<span class="err">⊘</span>` : '';
+    return `<div class="sub-step ${i===activeIdx?'active':''}"><span>${s}</span>${err}</div>`;
+  }).join('');
+  return `<div class="submenu">
+    <div class="sub-group">Property &amp; Guardianship</div>
+    <div class="sub-doc">Last Will + Living Trust</div>
+    ${steps}
+    
+    <div class="sub-group">Healthcare</div>
+    <div class="sub-doc">Healthcare Documents</div>
+    <div class="sub-group">Finances</div>
+    <div class="sub-doc sub-line">Power of Attorney <span class="free">FREE</span></div>
+  </div>`;
+}
+
+function renderShell(s){
+  let menuHtml;
+  if(s.menu==='smartguide') menuHtml = navItems('smartguide')+smartguideMenu();
+  else if(s.menu==='interview') menuHtml = navItems('smartguide')+interviewMenu(s.subActive, s.errs||[]);
+  else menuHtml = navItems(s.activeNav);
+  // for smartguide/interview we still show files+plans after; navItems already places them but submenu sits after smartguide item.
+  // To keep order correct we rebuild for menu modes:
+  if(s.menu==='smartguide' || s.menu==='interview'){
+    const sub = s.menu==='smartguide' ? smartguideMenu() : interviewMenu(s.subActive, s.errs||[]);
+    menuHtml = `
+      <div class="nav-item">${ICON.profile}<span>My Profile</span></div>
+      <div class="nav-item ${s.activeNav==='family'?'active':''}">${ICON.family}<span>Family</span></div>
+      <div class="nav-item active">${ICON.signpost}<span>Questionnaire</span></div>
+      ${sub}
+      <div class="nav-item">${ICON.files}<span>Files</span></div>
+      <div class="nav-divider"></div>
+      <div class="nav-item">${ICON.basket}<span>Products</span></div>`;
+  }
+  return `
+  <div class="frame">
+    <div class="topbar ${s.dark?'dark':''}">
+      <div class="brand">trustee<i>plan</i></div>
+      <div class="topright"><div class="chat-pill">${ICON.chat} CHAT</div><div class="ava">S</div></div>
+    </div>
+    <div class="layout">
+      <div class="sidebar">
+        <div class="side-scroll">
+          <div class="side-welcome"><div class="ava">S</div><div class="wb">Hi, <b>Stephanie</b></div></div>
+          <div class="nav">${menuHtml}</div>
+        </div>
+        <div class="orgcard">
+          <div class="top"><div class="ava">S</div><div class="nm"><span class="sub">SriMaha FS</span><b>Srimaha Financial Services</b></div></div>
+          <div class="ct"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>smfsllc@gmail.com</div>
+          <div class="ct"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3l2 5-2 1c1 2 3 4 5 5l1-2 5 2v3c0 1-1 2-2 2C10 20 4 14 4 6c0-1 1-2 1-2z"/></svg>+1 248 934 8881</div>
+        </div>
+        <div class="poweredby">Powered by trustee<i>plan</i></div>
+      </div>
+      <div class="content">${s.content}</div>
+    </div>
+  </div>`;
+}
+</script>
+<script>
+/* ===== BATCH 1: Onboarding + My Profile ===== */
+const userPill = `<div class="user-pill"><div class="ava">S</div>Stephanie Clark</div>`;
+const modalBrand = `<div class="modal-brandbar"><div class="brand">trustee<i>plan</i></div>${userPill}</div>`;
+
+reg('Dashboard — Welcome (empty state)', {
+  menu:'main', activeNav:'',
+  content:`<div class="welcome-empty">
+    <h2>Welcome!</h2>
+    <p>Before you start creating your documents, we'll ask you a few guided questions about you, your family, and your wishes. You only answer them once &mdash; we remember everything for each of your documents.</p>
+    <p>Let's start with <span class="tnr">your questionnaire.</span></p>
+    <button class="btn teal">Start questionnaire</button>
+  </div>`
+});
+
+reg('Terms &amp; Conditions — modal (must agree)', {
+  menu:'main', activeNav:'', dark:true,
+  content:`<div class="modal-overlay"><div class="modal">
+    ${modalBrand}
+    <div class="tc-bar"><div class="t">Terms and Conditions</div><div class="chev">⌃</div></div>
+    <div class="modal-body">
+      <h3>Terms and Conditions</h3>
+      <p>Please read these terms and conditions of service carefully.</p>
+      <h4>1. Introduction</h4>
+      <p><span class="clause">1.1.</span> This document establishes your legal agreement with TrusteePlan Group, Inc. and its subsidiaries, agents, officers, directors, employees, and independent contractors (collectively, "trusteeplan").</p>
+      <p><span class="clause">1.2.</span> Your use of the trusteeplan Documents, the Sites, or any other trusteeplan service is subject to these Terms and Conditions.</p>
+      <h4>2. Legal Services Not Provided</h4>
+      <p><span class="clause">2.1.</span> trusteeplan provides information and software only, facilitating the preparation of legal documents.</p>
+      <div class="agree-banner"><span>By selecting agree, you confirming that you have read, understood and agree to the terms.</span><button class="btn-sm">Agree</button></div>
+    </div>
+    <div class="modal-foot"><button class="btn gray">Next</button></div>
+  </div></div>`
+});
+
+reg('Terms &amp; Conditions — agreed', {
+  menu:'main', activeNav:'', dark:true,
+  content:`<div class="modal-overlay"><div class="modal">
+    ${modalBrand}
+    <div class="tc-bar agreed"><div class="t">Terms and Conditions</div><div class="meta">Agreed on May 23, 2026 12:45 PM <span class="check-circle">✓</span><span class="chev">▾</span></div></div>
+    <div class="modal-body modal-empty"></div>
+    <div class="modal-foot"><button class="btn teal">Next</button></div>
+  </div></div>`
+});
+</script>
+<style>
+/* trusteeplan-branded TrusteeFriend intake questionnaire */
+.qhero-badge{width:56px;height:56px;border-radius:16px;background:#e6ede1;color:#5f7b58;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;}
+.qhero-badge svg{width:26px;height:26px;}
+.q-note{display:inline-block;font-size:12px;color:#8a8a8a;background:#f4f6f2;border:1px solid #e6ebe2;border-radius:20px;padding:6px 14px;margin-top:14px;}
+.qsec-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px;}
+.qsec{display:flex;gap:12px;align-items:flex-start;border:1px solid #ededed;border-radius:12px;padding:14px 16px;background:#fafbfa;}
+.qsec .qi{width:34px;height:34px;border-radius:9px;background:#e6ede1;color:#5f7b58;display:flex;align-items:center;justify-content:center;flex:0 0 34px;}
+.qsec b{font-size:13.5px;color:#444;display:block;}
+.qsec span{font-size:12px;color:#999;}
+.qsteps{display:flex;align-items:center;margin:2px 0 4px;}
+.qstep{display:flex;align-items:center;gap:8px;}
+.qs-dot{width:26px;height:26px;border-radius:50%;background:#e2e6df;color:#9a9a9a;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 26px;}
+.qstep.active .qs-dot{background:var(--teal);color:#fff;}
+.qstep.done .qs-dot{background:#a9c2a0;color:#fff;}
+.qs-lbl{font-size:12.5px;color:#9a9a9a;font-weight:600;white-space:nowrap;}
+.qstep.active .qs-lbl{color:#333;}
+.qstep.done .qs-lbl{color:#6a6a6a;}
+.qs-line{flex:1;height:2px;background:#e2e2e2;margin:0 8px;min-width:10px;}
+.q-poweredby{text-align:center;font-size:11px;color:#b3b3b3;margin-top:16px;letter-spacing:.2px;}
+.q-review-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid #f1f1f1;}
+.q-review-row.first{border-top:none;}
+.q-review-row .k{font-size:14px;color:#444;font-weight:600;}
+.q-review-row .v{font-size:12.5px;color:#8a8a8a;margin-top:2px;}
+.q-review-row .e{font-size:12.5px;color:var(--teal-text);font-weight:700;}
+.qtable{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px;}
+.qtable th{text-align:left;color:#999;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:1px solid #eee;}
+.qtable td{padding:9px 10px;border-bottom:1px solid #f3f3f3;color:#555;}
+.done-badge{width:66px;height:66px;border-radius:50%;background:#eef6e6;color:var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:32px;}
+</style>
+<script>
+/* ===== Questionnaire (TrusteeFriend intake — trusteeplan-branded) ===== */
+const QSTEPS = ['Personal','Family','Estate Roles','Assets','Distribution','Final'];
+function qStepper(active){
+  return `<div class="qsteps">`+QSTEPS.map((s,i)=>{
+    const cls = i<active ? 'done' : (i===active ? 'active' : '');
+    const dot = i<active ? '✓' : (i+1);
+    return `<div class="qstep ${cls}"><span class="qs-dot">${dot}</span><span class="qs-lbl">${s}</span></div>`+(i<QSTEPS.length-1?'<span class="qs-line"></span>':'');
+  }).join('')+`</div>`;
+}
+function qHead(title){
+  return `<div class="panel-head"><div class="titleblock"><div class="accent"></div><div><div class="doc-small">Stephanie Clark's <b>Estate Plan</b></div><div class="doc-big">${title}</div></div></div>${ICON.cloud}</div><div class="hr"></div>`;
+}
+function idots(active,total){let a=[];for(let i=0;i<total;i++){a.push(i<active?'done':(i===active?'active':'todo'));}return a;}
+
+reg('Questionnaire — Get started', {
+  menu:'main', activeNav:'questionnaire',
+  content:`<div class="content-pad">
+    <div class="panel" style="max-width:780px;margin:0 auto;padding:32px 36px">
+      <div style="text-align:center">
+        <div class="qhero-badge">${ICON.signpost}</div>
+        <h2 style="font-weight:400;color:#555;font-size:27px;margin:8px 0 8px">Your Estate Plan Questionnaire</h2>
+        <p style="font-size:14px;color:#777;max-width:540px;margin:0 auto;line-height:1.6">A few guided questions about you, your family, and your wishes. Your answers become your will, living trust, and powers of attorney &mdash; reviewed by your advisor before anything is final.</p>
+        <div class="q-note">🔒 Secure intake &middot; about 15 minutes &middot; your progress saves automatically</div>
+      </div>
+      <div class="qsec-grid">
+        <div class="qsec"><div class="qi">${ICON.profile}</div><div><b>Personal Information</b><span>About you and your spouse</span></div></div>
+        <div class="qsec"><div class="qi">${ICON.family}</div><div><b>Family Information</b><span>Your children and dependents</span></div></div>
+        <div class="qsec"><div class="qi">${ICON.signpost}</div><div><b>Estate Plan Roles</b><span>Executor, POA &amp; guardians</span></div></div>
+        <div class="qsec"><div class="qi">${ICON.home}</div><div><b>Assets</b><span>Property and what you own</span></div></div>
+        <div class="qsec"><div class="qi">${ICON.basket}</div><div><b>Distribution</b><span>Who receives what</span></div></div>
+        <div class="qsec"><div class="qi">${ICON.file}</div><div><b>Final Thoughts</b><span>Notes &amp; your review call</span></div></div>
+      </div>
+      <div style="display:flex;justify-content:center;margin-top:26px"><button class="btn teal" style="padding:12px 34px">Start questionnaire</button></div>
+      <div class="q-poweredby">Secure intake powered by TrusteeFriend</div>
+    </div>
+  </div>`
+});
+
+reg('Questionnaire — Personal Information', {
+  menu:'main', activeNav:'questionnaire',
+  content:`<div class="content-pad" style="padding-bottom:74px"><div class="panel">
+    ${qHead('Personal Information')}
+    <div style="padding:18px 26px 0">${qStepper(0)}</div>
+    <div class="layout-tips"><div class="form-col" style="padding-top:14px">
+      <div class="section-title">About you</div>
+      ${field('What is your full legal name?','Stephanie Rosario Ramirez',{teal:true, help:'Exactly how your name will appear in your documents. Include Jr., Sr., II, III if they appear on your ID.'})}
+      <div style="height:8px"></div>
+      <div class="row2 tight">${selectField('How should we refer to you?','She/Her')}${field('Date of birth','01/01/1990')}</div>
+      <div style="height:10px"></div>
+      <div class="row2 tight">${field('Email','scramirez04@gmail.com')}${field('Phone','+1 714 813 6527')}</div>
+      <div style="height:14px"></div>
+      ${selectField('What is your marital status?','Married')}
+      <div class="section-title" style="margin-top:22px">About your spouse</div>
+      ${field("Spouse's full legal name",'Eduardo Roman Ramirez')}
+      <div style="height:8px"></div>
+      <div class="row2 tight">${selectField('Refer to them as','He/Him')}${field('Their date of birth','02/26/1985')}</div>
+      <div style="height:8px"></div>
+      <div class="row2 tight">${field('Their phone','(867) 999-5467')}${field('Date of marriage','06/14/2012')}</div>
+      <div class="section-title" style="margin-top:22px">Your home</div>
+      ${field('Address of your primary residence','1119 Rocky Road, Ely, Minnesota 55731')}
+      <div style="font-size:14px;color:#666;margin:12px 0 6px">Do you own this home?</div>
+      ${radios('own',[{label:'Yes',on:true},{label:'No, different address'},{label:'No real estate'}], true)}
+      ${btnRow([{t:'Next'}])}
+    </div>
+    ${tips([
+      {q:'Why your full legal name?', a:'Your documents must use your exact legal name. Include Jr., Sr., II, III, etc. if they appear on your ID.'},
+      {q:'Married clients', a:'If you\'re married, we guide you and your spouse through a coordinated plan — including the option of a joint revocable trust.'}
+    ])}
+    </div>
+  </div></div>
+  ${stepnav({left:'back', right:'fwd', dots:idots(0,6)})}`
+});
+
+reg('Questionnaire — Family Information', {
+  menu:'main', activeNav:'questionnaire',
+  content:`<div class="content-pad" style="padding-bottom:74px"><div class="panel">
+    ${qHead('Family Information')}
+    <div style="padding:18px 26px 0">${qStepper(1)}</div>
+    <div class="layout-tips"><div class="form-col" style="padding-top:14px">
+      <div style="font-size:15px;color:#555;margin:0 0 8px">Do you have children?</div>
+      ${radios('kids',[{label:'Yes',on:true},{label:'No'}])}
+      <div style="height:16px"></div>
+      <div style="font-size:15px;color:#555;margin:0 0 8px">Are any of your children minors?</div>
+      ${radios('minor',[{label:'Yes',on:true},{label:'No'}])}
+      <div class="section-title" style="margin-top:22px">Your children</div>
+      <div class="item-card">
+        <div class="item-head"><div class="left"><span class="grip">⠿</span><b style="color:#555">Rosario Elizabeth Ramirez</b></div><div class="right"><span style="font-size:12px;color:#999">Daughter &middot; minor</span>${ICON.trash}<span>⌃</span></div></div>
+        <div class="item-body">
+          ${field('Full legal name','Rosario Elizabeth Ramirez')}
+          <div class="row2 tight" style="margin-top:8px">${field('Date of birth','08/01/2015')}${selectField('Son or daughter?','Daughter')}</div>
+        </div>
+      </div>
+      <div class="add-row">+ Add another child</div>
+      ${btnRow([{t:'Next'}])}
+    </div>
+    ${tips([
+      {q:'Why children\'s ages matter', a:'Minor children can\'t serve legal roles or receive assets outright, so we help you name guardians and, if you wish, hold their inheritance in trust until they\'re older.'},
+      {q:'Blended families', a:'You can note children from a prior relationship or stepchildren — it helps us word the documents precisely.'}
+    ])}
+    </div>
+  </div></div>
+  ${stepnav({left:'back', right:'fwd', dots:idots(1,6)})}`
+});
+
+reg('Questionnaire — Estate Plan Roles', {
+  menu:'main', activeNav:'questionnaire',
+  content:`<div class="content-pad" style="padding-bottom:74px"><div class="panel">
+    ${qHead('Estate Plan Roles')}
+    <div style="padding:18px 26px 0">${qStepper(2)}</div>
+    <div class="layout-tips"><div class="form-col" style="padding-top:14px">
+      <div class="section-title">Executor of your will</div>
+      <div class="subtitle">The person who settles your estate.</div>
+      ${field('Full name','Gina Deloro')}
+      <div class="row2 tight" style="margin-top:8px">${field('Relationship to you','Sister')}${field('Phone','(218) 555-0148')}</div>
+      <div style="font-size:14px;color:#666;margin:14px 0 6px">Does your spouse want to name the same executor?</div>
+      ${radios('spx',[{label:'Yes',on:true},{label:'No'}])}
+      <div class="section-title" style="margin-top:22px">Financial Power of Attorney</div>
+      <div style="font-size:14px;color:#666;margin:0 0 6px">Should Gina Deloro also serve as your financial power of attorney?</div>
+      ${radios('fpoa',[{label:'Yes',on:true},{label:'No, someone else'}])}
+      <div class="section-title" style="margin-top:22px">Healthcare Power of Attorney</div>
+      ${field('Full name','Eduardo Roman Ramirez')}
+      <div class="section-title" style="margin-top:22px">Guardian for minor children</div>
+      ${field('Full name','Gina Deloro')}
+      <div style="font-size:14px;color:#666;margin:16px 0 6px">Should the appointed agents act jointly or separately?</div>
+      ${radios('act',[{label:'Jointly'},{label:'Separately',on:true}])}
+      <div style="font-size:14px;color:#666;margin:14px 0 6px">Do you want to name alternates for these roles?</div>
+      ${radios('alt',[{label:'Yes',on:true},{label:'No'}])}
+      ${btnRow([{t:'Next'}])}
+    </div>
+    ${tips([
+      {q:'What is an executor?', a:'The executor (personal representative) files your will, pays debts, and distributes your assets under court supervision.'},
+      {q:'Why name alternates?', a:'If your first choice can\'t serve, a named alternate steps in — otherwise a court decides for you.'},
+      {q:'Jointly vs. separately', a:'Agents acting jointly must agree on decisions; acting separately, each can act alone — often more convenient.'}
+    ])}
+    </div>
+  </div></div>
+  ${stepnav({left:'back', right:'fwd', dots:idots(2,6)})}`
+});
+
+reg('Questionnaire — Assets', {
+  menu:'main', activeNav:'questionnaire',
+  content:`<div class="content-pad" style="padding-bottom:74px"><div class="panel">
+    ${qHead('Asset Information')}
+    <div style="padding:18px 26px 0">${qStepper(3)}</div>
+    <div class="layout-tips"><div class="form-col" style="padding-top:14px">
+      <div style="font-size:15px;color:#555;margin:0 0 8px">Do you own real estate beyond your primary residence?</div>
+      ${radios('re',[{label:'Yes',on:true},{label:'No'}])}
+      <div class="row2 tight" style="margin-top:12px">${selectField('How many properties?','2')}${field('Additional property #1','214 Birch Ln, Ely, MN 55731')}</div>
+      <div style="height:8px"></div>
+      ${field('Additional property #2','Lot 7, Snowbank Lake, MN')}
+      <div class="section-title" style="margin-top:22px">Asset inventory</div>
+      <div style="font-size:14px;color:#666;margin:0 0 6px">Do you want to list your assets in the documents?</div>
+      ${radios('list',[{label:'Yes',on:true},{label:'No'}])}
+      <table class="qtable"><thead><tr><th>Asset</th><th>Type</th><th>Approx. value</th></tr></thead><tbody>
+        <tr><td>Checking &middot; Northern State Bank ····4471</td><td>Bank account</td><td>$18,500</td></tr>
+        <tr><td>401(k) &middot; Fidelity</td><td>Retirement</td><td>$142,000</td></tr>
+        <tr><td>1119 Rocky Road, Ely, MN</td><td>Real estate</td><td>$310,000</td></tr>
+      </tbody></table>
+      <div class="add-row" style="margin-top:8px">+ Add asset</div>
+      ${btnRow([{t:'Next'}])}
+    </div>
+    ${tips([
+      {q:'Why list assets?', a:'A clear inventory helps make sure nothing is missed and makes it easier for your trustee to fund the trust.'},
+      {q:'Retirement accounts', a:'IRAs and 401(k)s usually pass by beneficiary designation, not your trust — we\'ll flag any that need attention.'}
+    ])}
+    </div>
+  </div></div>
+  ${stepnav({left:'back', right:'fwd', dots:idots(3,6)})}`
+});
+
+reg('Questionnaire — Distribution', {
+  menu:'main', activeNav:'questionnaire',
+  content:`<div class="content-pad" style="padding-bottom:74px"><div class="panel">
+    ${qHead('Distribution')}
+    <div style="padding:18px 26px 0">${qStepper(4)}</div>
+    <div class="layout-tips"><div class="form-col" style="padding-top:14px">
+      <div style="font-size:15px;color:#555;margin:0 0 8px">Distribute your assets equally to your children?</div>
+      ${radios('eq',[{label:'Yes',on:true},{label:'No'}])}
+      <div style="height:12px"></div>
+      ${field('If not equal, how should your estate be divided?','',{placeholder:true, help:'Describe any specific percentages or arrangements.'})}
+      <div class="section-title" style="margin-top:22px">Specific gifts</div>
+      <div style="font-size:14px;color:#666;margin:0 0 8px">Do you wish to leave any specific items or gifts to someone?</div>
+      ${radios('gift',[{label:'Yes',on:true},{label:'No'}])}
+      <table class="qtable"><thead><tr><th>Item or amount</th><th>Goes to</th><th>Relationship</th></tr></thead><tbody>
+        <tr><td>Wedding ring</td><td>Rosario Elizabeth Ramirez</td><td>Daughter</td></tr>
+        <tr><td>$5,000</td><td>Gina Deloro</td><td>Sister</td></tr>
+      </tbody></table>
+      <div class="add-row" style="margin-top:8px">+ Add specific gift</div>
+      ${btnRow([{t:'Next'}])}
+    </div>
+    ${tips([
+      {q:'Residuary estate', a:'Anything not left as a specific gift passes as your "residuary estate" — usually to your spouse, then equally to your children.'},
+      {q:'Specific gifts', a:'You can leave particular items (jewelry, a vehicle) or cash amounts to named people or charities.'}
+    ])}
+    </div>
+  </div></div>
+  ${stepnav({left:'back', right:'fwd', dots:idots(4,6)})}`
+});
+
+reg('Questionnaire — Final Thoughts', {
+  menu:'main', activeNav:'questionnaire',
+  content:`<div class="content-pad" style="padding-bottom:74px"><div class="panel">
+    ${qHead('Final Thoughts')}
+    <div style="padding:18px 26px 0">${qStepper(5)}</div>
+    <div class="layout-tips"><div class="form-col" style="padding-top:14px">
+      <div class="section-title">Review with your advisor</div>
+      ${field('Preferred date & time for your review call','Thu, Jun 12 · 2:00 PM CT',{teal:true, help:'Your advisor will confirm the appointment by email.'})}
+      <div style="height:8px"></div>
+      <div style="font-size:14px;color:#666;margin:6px 0 6px">Any questions, notes, or special instructions?</div>
+      <div class="field" style="min-height:88px"><div class="field-val" style="color:#666;line-height:1.5">Please make sure our daughter's college fund is protected. We'd also like to discuss adding a pet trust.</div></div>
+      <div class="section-title" style="margin-top:24px">Your answers</div>
+      <div class="q-review-row first"><div><div class="k">Personal Information</div><div class="v">Stephanie Rosario Ramirez &middot; Married</div></div><span class="e">Edit</span></div>
+      <div class="q-review-row"><div><div class="k">Family Information</div><div class="v">1 child &middot; 1 minor</div></div><span class="e">Edit</span></div>
+      <div class="q-review-row"><div><div class="k">Estate Plan Roles</div><div class="v">Executor: Gina Deloro &middot; Guardian: Gina Deloro</div></div><span class="e">Edit</span></div>
+      <div class="q-review-row"><div><div class="k">Assets</div><div class="v">3 assets &middot; 2 additional properties</div></div><span class="e">Edit</span></div>
+      <div class="q-review-row"><div><div class="k">Distribution</div><div class="v">Equal to children &middot; 2 specific gifts</div></div><span class="e">Edit</span></div>
+      ${btnRow([{t:'Submit questionnaire'}])}
+    </div>
+    ${tips([
+      {q:'What happens next?', a:'Your advisor reviews your answers, prepares your documents, and they appear in your Files ready to sign.'},
+      {q:'Can I change something later?', a:'Yes — you can update any section before your review call, and your advisor can make changes for you afterward.'}
+    ])}
+    </div>
+  </div></div>
+  ${stepnav({left:'back', right:'check', dots:idots(6,6)})}`
+});
+
+reg('Questionnaire — Submitted', {
+  menu:'main', activeNav:'questionnaire',
+  content:`<div class="welcome-empty">
+    <div class="done-badge">✓</div>
+    <h2 style="color:#6a6a6a">Thank you, Stephanie!</h2>
+    <p>We've received your answers. <b>Srimaha Financial Services</b> will review your questionnaire and prepare your will, living trust, and powers of attorney.</p>
+    <div style="background:#eef6e6;border-radius:6px;width:520px;max-width:80%;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:3px solid var(--teal)"><span style="color:#555;font-size:15px">Estate Plan Questionnaire</span><span style="color:#799671;font-size:13px;font-weight:700">Submitted &middot; in review</span></div>
+    <p>Your documents will appear in <span class="tnr">Files</span> once they're ready — usually within a few business days. We'll email you the moment they are.</p>
+    <div style="display:flex;gap:12px"><button class="btn teal">Go to Files</button><button class="btn outline">Message my advisor</button></div>
+  </div>`
+});
+</script>
+<script>
+/* ===== BATCH 7: Files ===== */
+const FILES = [
+ ['Rosary Living Trust – Certificate of Trust Execution Instructions.docx','35 KB'],
+ ['Rosary Living Trust - Certificate of Trust.docx','38 KB'],
+ ['Rosary Living Trust - Execution Instructions.docx','41 KB'],
+ ['Rosary Living Trust - Funding Instructions.docx','38 KB'],
+ ['Rosary Living Trust - Trust Agreement.docx','76 KB'],
+ ['Stephanie Rosario Ramirez – Assignment of Personal Property Execution Instructions.docx','34 KB'],
+ ['Stephanie Rosario Ramirez - Assignment of Personal Property.docx','28 KB'],
+ ['Stephanie Rosario Ramirez - Last Will &amp; Testament Execution Instructions.docx','37 KB'],
+ ['Stephanie Rosario Ramirez - Last Will and Testament.docx','36 KB'],
+ ['Stephanie Rosario Ramirez – Personal Property Memorandum Execution Instructions.docx','36 KB'],
+ ['Stephanie Rosario Ramirez - Personal Property Memorandum.docx','25 KB'],
+];
+const filesHead = `<div class="files-head"><div class="ttl">${ICON.home}<span>Files</span></div><div class="files-actions"><div class="circle-btn">${ICON.refresh}</div><div class="circle-btn teal">+</div></div></div>`;
+function fileRows(sel){
+  return FILES.map((f,i)=>`<tr class="${i===sel?'sel':''}"><td><div class="fname"><span class="fico">${ICON.file}</span><span>${f[0]}</span></div></td><td class="mod">less than a minute ago</td><td>${f[1]}</td><td class="kebab">⋮</td></tr>`).join('');
+}
+function filesPage(detailsHtml, sel, extra){
+  return `${filesHead}
+  <div class="select-bar"><span class="check"></span><span>▾</span></div>
+  <div class="files-wrap">
+    <div class="files-main">
+      <table class="ftable"><thead><tr><th>Name</th><th>Modified</th><th>Size</th><th></th></tr></thead><tbody>${fileRows(sel)}</tbody></table>
+    </div>
+    ${detailsHtml}
+  </div>${extra||''}`;
+}
+const detailsEmpty = `<div class="details-panel"><div class="details-empty"><div class="info-circle">i</div><div>Select an item to see the details</div></div></div>`;
+const detailsFull = `<div class="details-panel">
+  <div class="dp-title">Rosary Living Trust – Certificate of Trust.docx</div>
+  <div class="thumb">Certificate of Trust<br><span style="font-size:10px">document preview</span></div>
+  <div class="thumb-nav"><span>←</span><span>1 / 4</span><span>→</span></div>
+  <div class="dp-section">Details</div>
+  <div class="dp-row"><div class="k">Type</div><div class="v">Document</div></div>
+  <div class="dp-row"><div class="k">Created</div><div class="v">2:00 PM</div></div>
+  <div class="dp-row"><div class="k">Modified</div><div class="v">2:00 PM</div></div>
+  <div class="dp-row"><div class="k">Size</div><div class="v">38 KB</div></div>
+  <div class="dp-actions">${ICON.download}${ICON.pencil}${ICON.trash}</div>
+</div>`;
+
+reg('Files — document list', {
+  menu:'main', activeNav:'files',
+  content: filesPage(detailsEmpty, -1)
+});
+
+reg('Files — document preview', {
+  menu:'main', activeNav:'files',
+  content: filesPage(detailsFull, 1) + `
+    <div class="modal-overlay"><div class="modal" style="width:880px">
+      <div style="padding:18px 26px"><h2 style="font-size:20px;color:#333;margin:0;line-height:1.3">Rosary Living Trust – Certificate of Trust Execution Instructions.docx</h2></div>
+      <div class="modal-body" style="background:#eaeff2">
+        <div style="background:#fff;max-width:620px;margin:0 auto;padding:40px 48px;box-shadow:0 1px 8px rgba(0,0,0,.12)">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:30px"><span class="brand" style="font-size:22px">trustee<i>plan</i></span></div>
+          <h4 style="font-size:16px;color:#333;margin:0 0 8px">Understanding Your Certificate of Trust</h4>
+          <p style="font-size:13px;color:#555;line-height:1.55">The certificate proves that your trust was established, that it still exists and that it's managed by a specific trustee. A certificate of trust verifies your trust for financial institutions without exposing private details.</p>
+          <p style="font-size:13px;color:#555;line-height:1.55">Having a certificate of trust in place allows your trustee(s) to perform their duties without having to produce the entire original trust every time they need to make a trust-related transaction.</p>
+          <h4 style="font-size:15px;color:#333;margin:18px 0 6px">What's in a certificate of trust?</h4>
+          <ul style="font-size:13px;color:#555;line-height:1.6;margin:0;padding-left:20px">
+            <li>The trust's name.</li><li>Date of Trust Agreement</li><li>The trust's tax identification number</li><li>The title to the trust's assets.</li><li>The name of the trust creator.</li><li>The name of the trustee.</li><li>The names of any successor/additional trustees.</li><li>Whether the trust is revocable or irrevocable.</li><li>A description of the trustee's powers.</li>
+          </ul>
+          <h4 style="font-size:15px;color:#333;margin:18px 0 6px">Making your Certificate of Trust Official</h4>
+          <p style="font-size:13px;color:#555;margin:0 0 4px"><b>Necessary parties:</b> You and your co-trustor, All Trustees, A notary public</p>
+        </div>
+      </div>
+      <div class="modal-foot"><button class="btn outline">Close</button></div>
+    </div></div>`
+});
+
+reg('Files — add menu + selected item', {
+  menu:'main', activeNav:'files',
+  content: filesPage(detailsFull, 1, `<div class="menu-pop"><div class="mi">${ICON.folder}<span>New folder</span></div><div class="mi">${ICON.upload}<span>File upload</span></div></div>`)
+});
+</script>
+<script>
+/* ===== Store (Products) ===== */
+reg('Products — catalog', {menu:'main', activeNav:'plans', content:`<div class="content-pad"><div class="store-wrap">
+  <div class="store-title">Products</div>
+  <div class="store-sub">Pick exactly what you need, <span class="tnr">nothing more.</span></div>
+  <div class="store-section-label">Guidance</div><div class="cat-grid"><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="M7 20h10"/><path d="M6 7h12"/><path d="M6 7l-2.6 5.2a2.6 2.6 0 0 0 5.2 0z"/><path d="M18 7l-2.6 5.2a2.6 2.6 0 0 0 5.2 0z"/><circle cx="12" cy="5" r="1.4"/></svg></div><div class="cat-name">Attorney Guidance</div><div class="cat-desc">One-on-one guidance from a licensed attorney. Available in all states.</div><div class="cat-foot"><div class="cat-price">$500</div><button class="btn-buy">Add</button></div></div><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.4 8.6l-2.1 4.7-4.7 2.1 2.1-4.7z"/></svg></div><div class="cat-name">Planner Guidance</div><div class="cat-desc">Guidance from a certified estate planner. 46 states &mdash; excludes FL, LA, NE &amp; NC.</div><div class="cat-foot"><div class="cat-price">$250</div><button class="btn-buy">Add</button></div></div></div><div class="store-section-label">Real Estate &amp; Deeds</div><div class="cat-grid"><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/></svg></div><div class="cat-name">Standalone Deed</div><div class="cat-desc">Prepare a single property deed. <span class="tnr">This is per deed.</span></div><div class="cat-foot"><div class="cat-price">$200</div><button class="btn-buy">Add</button></div></div><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-8 5 5 0 0 1 9.5 1.3A3.5 3.5 0 0 1 17 18z"/><path d="M12 16v-5m0 0l-2 2m2-2l2 2"/></svg></div><div class="cat-name">Electronic Deed Recording</div><div class="cat-desc">Record your deed electronically with the county, not all counties are supported.</div><div class="cat-foot"><div class="cat-price">$100</div><button class="btn-buy">Add</button></div></div><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg></div><div class="cat-name">Affidavit of Deceased Joint Tenant</div><div class="cat-desc">Update title after a joint owner passes.</div><div class="cat-foot"><div class="cat-price">$200</div><button class="btn-buy">Add</button></div></div></div>
+  <div class="store-section-label">Powers of Attorney</div><div class="cat-grid"><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 2.5v5.6c0 4.1-2.9 6.9-7 8.4-4.1-1.5-7-4.3-7-8.4V5.5z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="cat-name">Power of Attorney Documents</div><div class="cat-desc">Includes Financial Durable POA, Healthcare Directive &amp; HIPAA Release.</div><div class="cat-foot"><div class="cat-price">$150</div><button class="btn-buy">Add</button></div></div><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14" r="1.1" fill="currentColor" stroke="none"/></svg></div><div class="cat-name">Power of Attorney over Finances</div><div class="cat-desc">Includes a Financial Durable POA.</div><div class="cat-foot"><div class="cat-price">$100</div><button class="btn-buy">Add</button></div></div><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20C7 16.5 4 13.8 4 10.3 4 8 5.8 6.3 8 6.3c1.4 0 2.7.7 3.5 1.9l.5.7.5-.7C13.3 7 14.6 6.3 16 6.3c2.2 0 4 1.7 4 4 0 3.5-3 6.2-8 9.7z"/></svg></div><div class="cat-name">Power of Attorney over Healthcare</div><div class="cat-desc">Includes a Healthcare Directive &amp; HIPAA Release.</div><div class="cat-foot"><div class="cat-price">$100</div><button class="btn-buy">Add</button></div></div></div>
+  <div class="store-section-label">Modifications &amp; Specialty</div><div class="cat-grid"><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20h14"/><path d="M6 16l1-3.5 9-9 3 3-9 9z"/></svg></div><div class="cat-name">Amendment to Existing Estate Plan</div><div class="cat-desc">Trust Restatement, Codicil to Will, POA Revocation &amp; New POA.</div><div class="cat-foot"><div class="cat-price">$500</div><button class="btn-buy">Add</button></div></div><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M3 12h18"/></svg></div><div class="cat-name">Assignment of LLC Interest or Corporate Stock</div><div class="cat-desc">Business succession assignment.</div><div class="cat-foot"><div class="cat-price">$150</div><button class="btn-buy">Add</button></div></div></div>
+  <div class="store-section-label">Signing</div><div class="cat-grid"><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="M9.6 9l1.6 1.6L14.5 7"/><path d="M7 20h10M8.5 20l.8-3.5h5.4l.8 3.5"/></svg></div><div class="cat-name">In-person Mobile Notary Signing</div><div class="cat-desc">A notary comes to you to witness signing.</div><div class="cat-foot"><div class="cat-price">$150</div><button class="btn-buy">Add</button></div></div><div class="cat-card"><div class="cat-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 10.5l2 2 4-4"/><path d="M8.5 21h7M12 17v4"/></svg></div><div class="cat-name">Remote Online Notarization</div><div class="cat-desc">Sign and notarize online over secure video.</div><div class="cat-foot"><div class="cat-price">$100</div><button class="btn-buy">Add</button></div></div></div>
+</div></div>`});
+</script>
+<!-- SCREENS_GO_HERE -->
+<script>
+/* ---------- picker / navigation ---------- */
+let CUR = 0;
+function buildPicker(){
+  const p = document.getElementById('picker');
+  p.innerHTML = SCREENS.map((s,i)=>`<option value="${i}">${String(i+1).padStart(2,'0')} — ${s.label}</option>`).join('');
+}
+function show(i){
+  CUR = (+i+SCREENS.length)%SCREENS.length;
+  document.getElementById('root').innerHTML = renderShell(SCREENS[CUR]);
+  document.getElementById('picker').value = CUR;
+  document.getElementById('count').textContent = (CUR+1)+' / '+SCREENS.length;
+}
+function step(d){ show(CUR+d); }
+buildPicker();
+show(0);
+</script>
+</body>
+</html>
